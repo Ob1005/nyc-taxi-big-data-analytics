@@ -1,0 +1,722 @@
+[
+  {
+    "file": "yellow_tripdata_2020-01.parquet",
+    "status": "downloaded",
+    "bytes": 93562858,
+    "rows": 6405008
+  },
+  {
+    "file": "yellow_tripdata_2020-02.parquet",
+    "status": "downloaded",
+    "bytes": 92134881,
+    "rows": 6299367
+  },
+  {
+    "file": "yellow_tripdata_2020-03.parquet",
+    "status": "downloaded",
+    "bytes": 44442590,
+    "rows": 3007687
+  },
+  {
+    "file": "yellow_tripdata_2020-04.parquet",
+    "status": "downloaded",
+    "bytes": 4442620,
+    "rows": 238073
+  },
+  {
+    "file": "yellow_tripdata_2020-05.parquet",
+    "status": "downloaded",
+    "bytes": 6229864,
+    "rows": 348415
+  },
+  {
+    "file": "yellow_tripdata_2020-06.parquet",
+    "status": "downloaded",
+    "bytes": 9505358,
+    "rows": 549797
+  },
+  {
+    "file": "yellow_tripdata_2020-07.parquet",
+    "status": "downloaded",
+    "bytes": 13387778,
+    "rows": 800412
+  },
+  {
+    "file": "yellow_tripdata_2020-08.parquet",
+    "status": "downloaded",
+    "bytes": 16601463,
+    "rows": 1007286
+  },
+  {
+    "file": "yellow_tripdata_2020-09.parquet",
+    "status": "downloaded",
+    "bytes": 21381938,
+    "rows": 1341017
+  },
+  {
+    "file": "yellow_tripdata_2020-10.parquet",
+    "status": "downloaded",
+    "bytes": 26306876,
+    "rows": 1681132
+  },
+  {
+    "file": "yellow_tripdata_2020-11.parquet",
+    "status": "downloaded",
+    "bytes": 23583368,
+    "rows": 1509000
+  },
+  {
+    "file": "yellow_tripdata_2020-12.parquet",
+    "status": "downloaded",
+    "bytes": 23020036,
+    "rows": 1461898
+  },
+  {
+    "file": "yellow_tripdata_2021-01.parquet",
+    "status": "downloaded",
+    "bytes": 21686067,
+    "rows": 1369769
+  },
+  {
+    "file": "yellow_tripdata_2021-02.parquet",
+    "status": "downloaded",
+    "bytes": 21777258,
+    "rows": 1371709
+  },
+  {
+    "file": "yellow_tripdata_2021-03.parquet",
+    "status": "downloaded",
+    "bytes": 30007852,
+    "rows": 1925152
+  },
+  {
+    "file": "yellow_tripdata_2021-04.parquet",
+    "status": "downloaded",
+    "bytes": 34018560,
+    "rows": 2171187
+  },
+  {
+    "file": "yellow_tripdata_2021-05.parquet",
+    "status": "downloaded",
+    "bytes": 38743682,
+    "rows": 2507109
+  },
+  {
+    "file": "yellow_tripdata_2021-06.parquet",
+    "status": "downloaded",
+    "bytes": 44071592,
+    "rows": 2834264
+  },
+  {
+    "file": "yellow_tripdata_2021-07.parquet",
+    "status": "downloaded",
+    "bytes": 43697690,
+    "rows": 2821746
+  },
+  {
+    "file": "yellow_tripdata_2021-08.parquet",
+    "status": "downloaded",
+    "bytes": 43425907,
+    "rows": 2788757
+  },
+  {
+    "file": "yellow_tripdata_2021-09.parquet",
+    "status": "downloaded",
+    "bytes": 46125883,
+    "rows": 2963793
+  },
+  {
+    "file": "yellow_tripdata_2021-10.parquet",
+    "status": "downloaded",
+    "bytes": 53286464,
+    "rows": 3463504
+  },
+  {
+    "file": "yellow_tripdata_2021-11.parquet",
+    "status": "downloaded",
+    "bytes": 53100722,
+    "rows": 3472949
+  },
+  {
+    "file": "yellow_tripdata_2021-12.parquet",
+    "status": "downloaded",
+    "bytes": 49639052,
+    "rows": 3214369
+  },
+  {
+    "file": "yellow_tripdata_2022-01.parquet",
+    "status": "downloaded",
+    "bytes": 38139949,
+    "rows": 2463931
+  },
+  {
+    "file": "yellow_tripdata_2022-02.parquet",
+    "status": "downloaded",
+    "bytes": 45616512,
+    "rows": 2979431
+  },
+  {
+    "file": "yellow_tripdata_2022-03.parquet",
+    "status": "downloaded",
+    "bytes": 55682369,
+    "rows": 3627882
+  },
+  {
+    "file": "yellow_tripdata_2022-04.parquet",
+    "status": "downloaded",
+    "bytes": 55222692,
+    "rows": 3599920
+  },
+  {
+    "file": "yellow_tripdata_2022-05.parquet",
+    "status": "downloaded",
+    "bytes": 55558821,
+    "rows": 3588295
+  },
+  {
+    "file": "yellow_tripdata_2022-06.parquet",
+    "status": "downloaded",
+    "bytes": 55365184,
+    "rows": 3558124
+  },
+  {
+    "file": "yellow_tripdata_2022-07.parquet",
+    "status": "downloaded",
+    "bytes": 49367712,
+    "rows": 3174394
+  },
+  {
+    "file": "yellow_tripdata_2022-08.parquet",
+    "status": "downloaded",
+    "bytes": 49717159,
+    "rows": 3152677
+  },
+  {
+    "file": "yellow_tripdata_2022-09.parquet",
+    "status": "downloaded",
+    "bytes": 49619957,
+    "rows": 3183767
+  },
+  {
+    "file": "yellow_tripdata_2022-10.parquet",
+    "status": "downloaded",
+    "bytes": 57061938,
+    "rows": 3675411
+  },
+  {
+    "file": "yellow_tripdata_2022-11.parquet",
+    "status": "downloaded",
+    "bytes": 50106631,
+    "rows": 3252717
+  },
+  {
+    "file": "yellow_tripdata_2022-12.parquet",
+    "status": "downloaded",
+    "bytes": 53640739,
+    "rows": 3399549
+  },
+  {
+    "file": "yellow_tripdata_2023-01.parquet",
+    "status": "downloaded",
+    "bytes": 47673370,
+    "rows": 3066766
+  },
+  {
+    "file": "yellow_tripdata_2023-02.parquet",
+    "status": "downloaded",
+    "bytes": 47748012,
+    "rows": 2913955
+  },
+  {
+    "file": "yellow_tripdata_2023-03.parquet",
+    "status": "downloaded",
+    "bytes": 56127762,
+    "rows": 3403766
+  },
+  {
+    "file": "yellow_tripdata_2023-04.parquet",
+    "status": "downloaded",
+    "bytes": 54222699,
+    "rows": 3288250
+  },
+  {
+    "file": "yellow_tripdata_2023-05.parquet",
+    "status": "downloaded",
+    "bytes": 58654627,
+    "rows": 3513649
+  },
+  {
+    "file": "yellow_tripdata_2023-06.parquet",
+    "status": "downloaded",
+    "bytes": 54999465,
+    "rows": 3307234
+  },
+  {
+    "file": "yellow_tripdata_2023-07.parquet",
+    "status": "downloaded",
+    "bytes": 48361828,
+    "rows": 2907108
+  },
+  {
+    "file": "yellow_tripdata_2023-08.parquet",
+    "status": "downloaded",
+    "bytes": 48152353,
+    "rows": 2824209
+  },
+  {
+    "file": "yellow_tripdata_2023-09.parquet",
+    "status": "downloaded",
+    "bytes": 47895515,
+    "rows": 2846722
+  },
+  {
+    "file": "yellow_tripdata_2023-10.parquet",
+    "status": "downloaded",
+    "bytes": 59009059,
+    "rows": 3522285
+  },
+  {
+    "file": "yellow_tripdata_2023-11.parquet",
+    "status": "downloaded",
+    "bytes": 56094653,
+    "rows": 3339715
+  },
+  {
+    "file": "yellow_tripdata_2023-12.parquet",
+    "status": "downloaded",
+    "bytes": 56804275,
+    "rows": 3376567
+  },
+  {
+    "file": "yellow_tripdata_2024-01.parquet",
+    "status": "cached",
+    "bytes": 49961641,
+    "rows": 2964624
+  },
+  {
+    "file": "yellow_tripdata_2024-02.parquet",
+    "status": "cached",
+    "bytes": 50349284,
+    "rows": 3007526
+  },
+  {
+    "file": "yellow_tripdata_2024-03.parquet",
+    "status": "cached",
+    "bytes": 60078280,
+    "rows": 3582628
+  },
+  {
+    "file": "yellow_tripdata_2024-04.parquet",
+    "status": "downloaded",
+    "bytes": 59133625,
+    "rows": 3514289
+  },
+  {
+    "file": "yellow_tripdata_2024-05.parquet",
+    "status": "downloaded",
+    "bytes": 62553128,
+    "rows": 3723833
+  },
+  {
+    "file": "yellow_tripdata_2024-06.parquet",
+    "status": "downloaded",
+    "bytes": 59859922,
+    "rows": 3539193
+  },
+  {
+    "file": "yellow_tripdata_2024-07.parquet",
+    "status": "downloaded",
+    "bytes": 52299432,
+    "rows": 3076903
+  },
+  {
+    "file": "yellow_tripdata_2024-08.parquet",
+    "status": "downloaded",
+    "bytes": 51067350,
+    "rows": 2979183
+  },
+  {
+    "file": "yellow_tripdata_2024-09.parquet",
+    "status": "downloaded",
+    "bytes": 61170186,
+    "rows": 3633030
+  },
+  {
+    "file": "yellow_tripdata_2024-10.parquet",
+    "status": "downloaded",
+    "bytes": 64346071,
+    "rows": 3833771
+  },
+  {
+    "file": "yellow_tripdata_2024-11.parquet",
+    "status": "downloaded",
+    "bytes": 60658709,
+    "rows": 3646369
+  },
+  {
+    "file": "yellow_tripdata_2024-12.parquet",
+    "status": "downloaded",
+    "bytes": 61524085,
+    "rows": 3668371
+  },
+  {
+    "file": "green_tripdata_2020-01.parquet",
+    "status": "downloaded",
+    "bytes": 7183298,
+    "rows": 447770
+  },
+  {
+    "file": "green_tripdata_2020-02.parquet",
+    "status": "downloaded",
+    "bytes": 6649395,
+    "rows": 398632
+  },
+  {
+    "file": "green_tripdata_2020-03.parquet",
+    "status": "downloaded",
+    "bytes": 4019591,
+    "rows": 223496
+  },
+  {
+    "file": "green_tripdata_2020-04.parquet",
+    "status": "downloaded",
+    "bytes": 713573,
+    "rows": 35644
+  },
+  {
+    "file": "green_tripdata_2020-05.parquet",
+    "status": "downloaded",
+    "bytes": 1082586,
+    "rows": 57361
+  },
+  {
+    "file": "green_tripdata_2020-06.parquet",
+    "status": "downloaded",
+    "bytes": 1205174,
+    "rows": 63110
+  },
+  {
+    "file": "green_tripdata_2020-07.parquet",
+    "status": "downloaded",
+    "bytes": 1308197,
+    "rows": 72258
+  },
+  {
+    "file": "green_tripdata_2020-08.parquet",
+    "status": "downloaded",
+    "bytes": 1503105,
+    "rows": 81063
+  },
+  {
+    "file": "green_tripdata_2020-09.parquet",
+    "status": "downloaded",
+    "bytes": 1586731,
+    "rows": 87987
+  },
+  {
+    "file": "green_tripdata_2020-10.parquet",
+    "status": "downloaded",
+    "bytes": 1731109,
+    "rows": 95120
+  },
+  {
+    "file": "green_tripdata_2020-11.parquet",
+    "status": "downloaded",
+    "bytes": 1616478,
+    "rows": 88605
+  },
+  {
+    "file": "green_tripdata_2020-12.parquet",
+    "status": "downloaded",
+    "bytes": 1458436,
+    "rows": 83130
+  },
+  {
+    "file": "green_tripdata_2021-01.parquet",
+    "status": "downloaded",
+    "bytes": 1333519,
+    "rows": 76518
+  },
+  {
+    "file": "green_tripdata_2021-02.parquet",
+    "status": "downloaded",
+    "bytes": 1145679,
+    "rows": 64572
+  },
+  {
+    "file": "green_tripdata_2021-03.parquet",
+    "status": "downloaded",
+    "bytes": 1474538,
+    "rows": 83827
+  },
+  {
+    "file": "green_tripdata_2021-04.parquet",
+    "status": "downloaded",
+    "bytes": 1534964,
+    "rows": 86941
+  },
+  {
+    "file": "green_tripdata_2021-05.parquet",
+    "status": "downloaded",
+    "bytes": 1660008,
+    "rows": 88180
+  },
+  {
+    "file": "green_tripdata_2021-06.parquet",
+    "status": "downloaded",
+    "bytes": 1676692,
+    "rows": 86737
+  },
+  {
+    "file": "green_tripdata_2021-07.parquet",
+    "status": "downloaded",
+    "bytes": 1618130,
+    "rows": 83691
+  },
+  {
+    "file": "green_tripdata_2021-08.parquet",
+    "status": "downloaded",
+    "bytes": 1614286,
+    "rows": 83499
+  },
+  {
+    "file": "green_tripdata_2021-09.parquet",
+    "status": "downloaded",
+    "bytes": 1883216,
+    "rows": 95709
+  },
+  {
+    "file": "green_tripdata_2021-10.parquet",
+    "status": "downloaded",
+    "bytes": 2167393,
+    "rows": 110891
+  },
+  {
+    "file": "green_tripdata_2021-11.parquet",
+    "status": "downloaded",
+    "bytes": 2129145,
+    "rows": 108229
+  },
+  {
+    "file": "green_tripdata_2021-12.parquet",
+    "status": "downloaded",
+    "bytes": 2008137,
+    "rows": 99961
+  },
+  {
+    "file": "green_tripdata_2022-01.parquet",
+    "status": "downloaded",
+    "bytes": 1254291,
+    "rows": 62495
+  },
+  {
+    "file": "green_tripdata_2022-02.parquet",
+    "status": "downloaded",
+    "bytes": 1428262,
+    "rows": 69399
+  },
+  {
+    "file": "green_tripdata_2022-03.parquet",
+    "status": "downloaded",
+    "bytes": 1615562,
+    "rows": 78537
+  },
+  {
+    "file": "green_tripdata_2022-04.parquet",
+    "status": "downloaded",
+    "bytes": 1570363,
+    "rows": 76136
+  },
+  {
+    "file": "green_tripdata_2022-05.parquet",
+    "status": "downloaded",
+    "bytes": 1589636,
+    "rows": 76891
+  },
+  {
+    "file": "green_tripdata_2022-06.parquet",
+    "status": "downloaded",
+    "bytes": 1529658,
+    "rows": 73718
+  },
+  {
+    "file": "green_tripdata_2022-07.parquet",
+    "status": "downloaded",
+    "bytes": 1312353,
+    "rows": 64192
+  },
+  {
+    "file": "green_tripdata_2022-08.parquet",
+    "status": "downloaded",
+    "bytes": 1346660,
+    "rows": 65929
+  },
+  {
+    "file": "green_tripdata_2022-09.parquet",
+    "status": "downloaded",
+    "bytes": 1445166,
+    "rows": 69031
+  },
+  {
+    "file": "green_tripdata_2022-10.parquet",
+    "status": "downloaded",
+    "bytes": 1444642,
+    "rows": 69322
+  },
+  {
+    "file": "green_tripdata_2022-11.parquet",
+    "status": "downloaded",
+    "bytes": 1270324,
+    "rows": 62313
+  },
+  {
+    "file": "green_tripdata_2022-12.parquet",
+    "status": "downloaded",
+    "bytes": 1519259,
+    "rows": 72439
+  },
+  {
+    "file": "green_tripdata_2023-01.parquet",
+    "status": "downloaded",
+    "bytes": 1427002,
+    "rows": 68211
+  },
+  {
+    "file": "green_tripdata_2023-02.parquet",
+    "status": "downloaded",
+    "bytes": 1533740,
+    "rows": 64809
+  },
+  {
+    "file": "green_tripdata_2023-03.parquet",
+    "status": "downloaded",
+    "bytes": 1730999,
+    "rows": 72044
+  },
+  {
+    "file": "green_tripdata_2023-04.parquet",
+    "status": "downloaded",
+    "bytes": 1570467,
+    "rows": 65392
+  },
+  {
+    "file": "green_tripdata_2023-05.parquet",
+    "status": "downloaded",
+    "bytes": 1673841,
+    "rows": 69174
+  },
+  {
+    "file": "green_tripdata_2023-06.parquet",
+    "status": "downloaded",
+    "bytes": 1563684,
+    "rows": 65550
+  },
+  {
+    "file": "green_tripdata_2023-07.parquet",
+    "status": "downloaded",
+    "bytes": 1470000,
+    "rows": 61343
+  },
+  {
+    "file": "green_tripdata_2023-08.parquet",
+    "status": "downloaded",
+    "bytes": 1477938,
+    "rows": 60649
+  },
+  {
+    "file": "green_tripdata_2023-09.parquet",
+    "status": "downloaded",
+    "bytes": 1561554,
+    "rows": 65471
+  },
+  {
+    "file": "green_tripdata_2023-10.parquet",
+    "status": "downloaded",
+    "bytes": 1587100,
+    "rows": 66177
+  },
+  {
+    "file": "green_tripdata_2023-11.parquet",
+    "status": "downloaded",
+    "bytes": 1520705,
+    "rows": 64025
+  },
+  {
+    "file": "green_tripdata_2023-12.parquet",
+    "status": "downloaded",
+    "bytes": 1522951,
+    "rows": 64215
+  },
+  {
+    "file": "green_tripdata_2024-01.parquet",
+    "status": "cached",
+    "bytes": 1362284,
+    "rows": 56551
+  },
+  {
+    "file": "green_tripdata_2024-02.parquet",
+    "status": "cached",
+    "bytes": 1283805,
+    "rows": 53577
+  },
+  {
+    "file": "green_tripdata_2024-03.parquet",
+    "status": "cached",
+    "bytes": 1372372,
+    "rows": 57457
+  },
+  {
+    "file": "green_tripdata_2024-04.parquet",
+    "status": "downloaded",
+    "bytes": 1346502,
+    "rows": 56471
+  },
+  {
+    "file": "green_tripdata_2024-05.parquet",
+    "status": "downloaded",
+    "bytes": 1453912,
+    "rows": 61003
+  },
+  {
+    "file": "green_tripdata_2024-06.parquet",
+    "status": "downloaded",
+    "bytes": 1326194,
+    "rows": 54748
+  },
+  {
+    "file": "green_tripdata_2024-07.parquet",
+    "status": "downloaded",
+    "bytes": 1250973,
+    "rows": 51837
+  },
+  {
+    "file": "green_tripdata_2024-08.parquet",
+    "status": "downloaded",
+    "bytes": 1267079,
+    "rows": 51771
+  },
+  {
+    "file": "green_tripdata_2024-09.parquet",
+    "status": "downloaded",
+    "bytes": 1326186,
+    "rows": 54440
+  },
+  {
+    "file": "green_tripdata_2024-10.parquet",
+    "status": "downloaded",
+    "bytes": 1353731,
+    "rows": 56147
+  },
+  {
+    "file": "green_tripdata_2024-11.parquet",
+    "status": "downloaded",
+    "bytes": 1264688,
+    "rows": 52222
+  },
+  {
+    "file": "green_tripdata_2024-12.parquet",
+    "status": "downloaded",
+    "bytes": 1312306,
+    "rows": 53994
+  }
+]

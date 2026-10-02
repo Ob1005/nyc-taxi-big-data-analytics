@@ -1,0 +1,412 @@
+{
+  "synthetic": false,
+  "source_files": [
+    {
+      "file": "green_tripdata_2020-01.parquet",
+      "rows": 447770
+    },
+    {
+      "file": "green_tripdata_2020-02.parquet",
+      "rows": 398632
+    },
+    {
+      "file": "green_tripdata_2020-03.parquet",
+      "rows": 223496
+    },
+    {
+      "file": "green_tripdata_2020-04.parquet",
+      "rows": 35644
+    },
+    {
+      "file": "green_tripdata_2020-05.parquet",
+      "rows": 57361
+    },
+    {
+      "file": "green_tripdata_2020-06.parquet",
+      "rows": 63110
+    },
+    {
+      "file": "green_tripdata_2020-07.parquet",
+      "rows": 72258
+    },
+    {
+      "file": "green_tripdata_2020-08.parquet",
+      "rows": 81063
+    },
+    {
+      "file": "green_tripdata_2020-09.parquet",
+      "rows": 87987
+    },
+    {
+      "file": "green_tripdata_2020-10.parquet",
+      "rows": 95120
+    },
+    {
+      "file": "green_tripdata_2020-11.parquet",
+      "rows": 88605
+    },
+    {
+      "file": "green_tripdata_2020-12.parquet",
+      "rows": 83130
+    },
+    {
+      "file": "green_tripdata_2021-01.parquet",
+      "rows": 76518
+    },
+    {
+      "file": "green_tripdata_2021-02.parquet",
+      "rows": 64572
+    },
+    {
+      "file": "green_tripdata_2021-03.parquet",
+      "rows": 83827
+    },
+    {
+      "file": "green_tripdata_2021-04.parquet",
+      "rows": 86941
+    },
+    {
+      "file": "green_tripdata_2021-05.parquet",
+      "rows": 88180
+    },
+    {
+      "file": "green_tripdata_2021-06.parquet",
+      "rows": 86737
+    },
+    {
+      "file": "green_tripdata_2021-07.parquet",
+      "rows": 83691
+    },
+    {
+      "file": "green_tripdata_2021-08.parquet",
+      "rows": 83499
+    },
+    {
+      "file": "green_tripdata_2021-09.parquet",
+      "rows": 95709
+    },
+    {
+      "file": "green_tripdata_2021-10.parquet",
+      "rows": 110891
+    },
+    {
+      "file": "green_tripdata_2021-11.parquet",
+      "rows": 108229
+    },
+    {
+      "file": "green_tripdata_2021-12.parquet",
+      "rows": 99961
+    },
+    {
+      "file": "green_tripdata_2022-01.parquet",
+      "rows": 62495
+    },
+    {
+      "file": "green_tripdata_2022-02.parquet",
+      "rows": 69399
+    },
+    {
+      "file": "green_tripdata_2022-03.parquet",
+      "rows": 78537
+    },
+    {
+      "file": "green_tripdata_2022-04.parquet",
+      "rows": 76136
+    },
+    {
+      "file": "green_tripdata_2022-05.parquet",
+      "rows": 76891
+    },
+    {
+      "file": "green_tripdata_2022-06.parquet",
+      "rows": 73718
+    },
+    {
+      "file": "green_tripdata_2022-07.parquet",
+      "rows": 64192
+    },
+    {
+      "file": "green_tripdata_2022-08.parquet",
+      "rows": 65929
+    },
+    {
+      "file": "green_tripdata_2022-09.parquet",
+      "rows": 69031
+    },
+    {
+      "file": "green_tripdata_2022-10.parquet",
+      "rows": 69322
+    },
+    {
+      "file": "green_tripdata_2022-11.parquet",
+      "rows": 62313
+    },
+    {
+      "file": "green_tripdata_2022-12.parquet",
+      "rows": 72439
+    },
+    {
+      "file": "green_tripdata_2023-01.parquet",
+      "rows": 68211
+    },
+    {
+      "file": "green_tripdata_2023-02.parquet",
+      "rows": 64809
+    },
+    {
+      "file": "green_tripdata_2023-03.parquet",
+      "rows": 72044
+    },
+    {
+      "file": "green_tripdata_2023-04.parquet",
+      "rows": 65392
+    },
+    {
+      "file": "green_tripdata_2023-05.parquet",
+      "rows": 69174
+    },
+    {
+      "file": "green_tripdata_2023-06.parquet",
+      "rows": 65550
+    },
+    {
+      "file": "green_tripdata_2023-07.parquet",
+      "rows": 61343
+    },
+    {
+      "file": "green_tripdata_2023-08.parquet",
+      "rows": 60649
+    },
+    {
+      "file": "green_tripdata_2023-09.parquet",
+      "rows": 65471
+    },
+    {
+      "file": "green_tripdata_2023-10.parquet",
+      "rows": 66177
+    },
+    {
+      "file": "green_tripdata_2023-11.parquet",
+      "rows": 64025
+    },
+    {
+      "file": "green_tripdata_2023-12.parquet",
+      "rows": 64215
+    },
+    {
+      "file": "green_tripdata_2024-01.parquet",
+      "rows": 56551
+    },
+    {
+      "file": "green_tripdata_2024-02.parquet",
+      "rows": 53577
+    },
+    {
+      "file": "green_tripdata_2024-03.parquet",
+      "rows": 57457
+    },
+    {
+      "file": "green_tripdata_2024-04.parquet",
+      "rows": 56471
+    },
+    {
+      "file": "green_tripdata_2024-05.parquet",
+      "rows": 61003
+    },
+    {
+      "file": "green_tripdata_2024-06.parquet",
+      "rows": 54748
+    },
+    {
+      "file": "green_tripdata_2024-07.parquet",
+      "rows": 51837
+    },
+    {
+      "file": "green_tripdata_2024-08.parquet",
+      "rows": 51771
+    },
+    {
+      "file": "green_tripdata_2024-09.parquet",
+      "rows": 54440
+    },
+    {
+      "file": "green_tripdata_2024-10.parquet",
+      "rows": 56147
+    },
+    {
+      "file": "green_tripdata_2024-11.parquet",
+      "rows": 52222
+    },
+    {
+      "file": "green_tripdata_2024-12.parquet",
+      "rows": 53994
+    }
+  ],
+  "years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "sqlite_rows": 100000,
+  "sqlite_scope": "bounded_snapshot",
+  "sqlite_limit": 100000,
+  "full_cleaned_rows": 4845392,
+  "quality": {
+    "accepted": 4845392,
+    "invalid_distance": 229226,
+    "outside_period": 111,
+    "invalid_fare": 14811,
+    "invalid_duration": 1071
+  },
+  "modeling": {
+    "split_counts": {
+      "base_train": 173992,
+      "validation": 37329,
+      "test": 31158
+    },
+    "selected_training_rows": 347393,
+    "sample_fraction": 0.05,
+    "seed": 42,
+    "train_before": "2023-01-01",
+    "validation_before": "2024-01-01",
+    "validation": [
+      {
+        "model": "LinearRegression",
+        "rmse": 23.46793493009601,
+        "mae": 4.88671808444933,
+        "r2": 0.2274703450510266,
+        "fit_and_evaluation_seconds": 3.646929417000024
+      },
+      {
+        "model": "RandomForestRegressor",
+        "rmse": 23.472859669083572,
+        "mae": 4.043364409063575,
+        "r2": 0.22714608080626741,
+        "fit_and_evaluation_seconds": 9.330644667000001
+      },
+      {
+        "model": "GBTRegressor",
+        "rmse": 23.453330246135806,
+        "mae": 4.214153370899341,
+        "r2": 0.22843157498342292,
+        "fit_and_evaluation_seconds": 31.866780250000033
+      }
+    ],
+    "selected_model": "GBTRegressor",
+    "sample_size_comparison": [
+      {
+        "training_rows": 173992,
+        "training_fraction": 0.05,
+        "validation": {
+          "rmse": 23.453330246135806,
+          "mae": 4.214153370899341,
+          "r2": 0.22843157498342292
+        }
+      },
+      {
+        "training_rows": 347393,
+        "training_fraction": 0.1,
+        "validation": {
+          "rmse": 23.38305629601552,
+          "mae": 4.188383094067335,
+          "r2": 0.233048397256581
+        }
+      }
+    ],
+    "training_input_caps_p999": {
+      "trip_distance": 40.89,
+      "duration_minutes": 1411.05
+    },
+    "uncapped_linear_validation": {
+      "rmse": 23.69637292996238,
+      "mae": 5.047995537392932,
+      "r2": 0.21235746542084621
+    },
+    "uncapped_linear_diagnostics": {
+      "absolute_error_quantiles": {
+        "median": 2.8775085701899297,
+        "p90": 10.23152933967998,
+        "p99": 32.529879783644375
+      },
+      "worst_20_share_of_squared_error": 0.865036875654887
+    },
+    "validation_diagnostics": {
+      "LinearRegression": {
+        "absolute_error_quantiles": {
+          "median": 2.8702356339678374,
+          "p90": 9.611644982679142,
+          "p99": 32.27907395250351
+        },
+        "worst_20_share_of_squared_error": 0.8693342856579283
+      },
+      "RandomForestRegressor": {
+        "absolute_error_quantiles": {
+          "median": 2.1024752215330675,
+          "p90": 7.675726827677341,
+          "p99": 31.941651154912513
+        },
+        "worst_20_share_of_squared_error": 0.8846117505476487
+      },
+      "GBTRegressor": {
+        "absolute_error_quantiles": {
+          "median": 2.4791328882536448,
+          "p90": 7.931620292785027,
+          "p99": 29.113130899538056
+        },
+        "worst_20_share_of_squared_error": 0.8907485681648156
+      }
+    },
+    "test": {
+      "rmse": 10.382458551767181,
+      "mae": 4.369265347204417,
+      "r2": 0.6009139711691609
+    },
+    "test_diagnostics": {
+      "absolute_error_quantiles": {
+        "median": 2.481192973751087,
+        "p90": 8.48101296914249,
+        "p99": 37.24762369069339
+      },
+      "worst_20_share_of_squared_error": 0.3852749165744414
+    },
+    "mean_baseline_test": {
+      "rmse": 16.451338006109523,
+      "mae": 9.206590799214972,
+      "r2": -0.0020019415279193264
+    },
+    "prediction_context": "completed-trip metered fare, excluding tips and surcharges",
+    "elapsed_seconds": 100.83298891699997
+  },
+  "stage_seconds": {
+    "load_clean_and_parquet_seconds": 41.639108792,
+    "sqlite_seconds": 4.012259624999956,
+    "eda_seconds": 8.483274250000022,
+    "modeling_seconds": 102.36188791699999
+  },
+  "elapsed_seconds": 156.59614929200006,
+  "environment": {
+    "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+    "spark": "3.5.3",
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "java": "java version \"17.0.12\" 2024-07-16 LTS\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "master": "local[2]",
+    "driver_memory": "4g",
+    "timezone": "America/New_York"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "source_months": [
+    "2024-01",
+    "2024-02",
+    "2024-03"
+  ],
+  "quality": {
+    "outside_period": 9,
+    "invalid_duration": 344,
+    "invalid_fare": 127761,
+    "accepted": 9210900,
+    "invalid_distance": 215764
+  },
+  "split_counts": {
+    "train": 28888,
+    "validation": 29150
+  },
+  "sample_fraction": 0.01,
+  "seed": 42,
+  "variants": {
+    "uncapped": {
+      "metrics": {
+        "rmse": 105.71130590155984,
+        "mae": 3.2052342028349496,
+        "r2": -38.5337701264502
+      },
+      "caps": {},
+      "diagnostics": {
+        "absolute_error_quantiles": {
+          "median": 1.5912875596381095,
+          "p90": 4.978222004081042,
+          "p99": 17.533445316714683
+        },
+        "worst_20_share_of_squared_error": 0.9979838994305393
+      }
+    },
+    "training_only_caps": {
+      "metrics": {
+        "rmse": 5.317937823924366,
+        "mae": 1.7819878089430339,
+        "r2": 0.8999512037833048
+      },
+      "caps": {
+        "trip_distance": 31.81,
+        "duration_minutes": 101.76666666666667
+      },
+      "diagnostics": {
+        "absolute_error_quantiles": {
+          "median": 0.8236485956921449,
+          "p90": 3.1869083453422853,
+          "p99": 18.35553089988291
+        },
+        "worst_20_share_of_squared_error": 0.3153834249627601
+      }
+    }
+  },
+  "elapsed_seconds": 38.762251625
+}

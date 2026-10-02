@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nyc-taxi-fare-analytics"
+version = "0.1.0"
+description = "Reproducible NYC taxi analytics and completed-trip fare modeling with Spark"
+requires-python = ">=3.9,<3.13"
+dependencies = ["pyspark==3.5.3", "matplotlib==3.9.2", "pyarrow==17.0.0"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.3", "jupyterlab>=4,<5"]
+
+[project.scripts]
+nyc-taxi = "nyc_taxi.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

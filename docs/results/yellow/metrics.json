@@ -1,0 +1,119 @@
+{
+  "split_counts": {
+    "base_train": 186681,
+    "validation": 74588,
+    "test": 79570
+  },
+  "selected_training_rows": 373614,
+  "sample_fraction": 0.002,
+  "seed": 42,
+  "train_before": "2023-01-01",
+  "validation_before": "2024-01-01",
+  "validation": [
+    {
+      "model": "LinearRegression",
+      "rmse": 9.308159077025428,
+      "mae": 5.53736171684281,
+      "r2": 0.731129532809208,
+      "fit_and_evaluation_seconds": 7.046700875000056
+    },
+    {
+      "model": "RandomForestRegressor",
+      "rmse": 9.057589724168574,
+      "mae": 5.216421279293623,
+      "r2": 0.745410318423062,
+      "fit_and_evaluation_seconds": 26.759151416999998
+    },
+    {
+      "model": "GBTRegressor",
+      "rmse": 8.433350390438063,
+      "mae": 4.990238528239503,
+      "r2": 0.779293157366528,
+      "fit_and_evaluation_seconds": 59.880216625
+    }
+  ],
+  "selected_model": "GBTRegressor",
+  "sample_size_comparison": [
+    {
+      "training_rows": 186681,
+      "training_fraction": 0.002,
+      "validation": {
+        "rmse": 8.433350390438063,
+        "mae": 4.990238528239503,
+        "r2": 0.779293157366528
+      }
+    },
+    {
+      "training_rows": 373614,
+      "training_fraction": 0.004,
+      "validation": {
+        "rmse": 8.409943466457952,
+        "mae": 4.996831819168344,
+        "r2": 0.7805166092067359
+      }
+    }
+  ],
+  "training_input_caps_p999": {
+    "trip_distance": 28.2,
+    "duration_minutes": 1400.6666666666667
+  },
+  "uncapped_linear_validation": {
+    "rmse": 9.877592006385305,
+    "mae": 5.722960184958181,
+    "r2": 0.6972266294328444
+  },
+  "uncapped_linear_diagnostics": {
+    "absolute_error_quantiles": {
+      "median": 3.3167633862054364,
+      "p90": 13.611280897886836,
+      "p99": 28.26176523136001
+    },
+    "worst_20_share_of_squared_error": 0.15862730808936532
+  },
+  "validation_diagnostics": {
+    "LinearRegression": {
+      "absolute_error_quantiles": {
+        "median": 3.4700077785220245,
+        "p90": 13.045473309477899,
+        "p99": 26.13623091456582
+      },
+      "worst_20_share_of_squared_error": 0.16696714549972055
+    },
+    "RandomForestRegressor": {
+      "absolute_error_quantiles": {
+        "median": 3.393482997363872,
+        "p90": 11.442483881357454,
+        "p99": 27.94315767493503
+      },
+      "worst_20_share_of_squared_error": 0.17970098584873576
+    },
+    "GBTRegressor": {
+      "absolute_error_quantiles": {
+        "median": 3.140995484808422,
+        "p90": 11.107527347664611,
+        "p99": 24.7802272977245
+      },
+      "worst_20_share_of_squared_error": 0.164525432145632
+    }
+  },
+  "test": {
+    "rmse": 8.435952968141349,
+    "mae": 5.249078431158853,
+    "r2": 0.7702047477786518
+  },
+  "test_diagnostics": {
+    "absolute_error_quantiles": {
+      "median": 3.2951609553399877,
+      "p90": 11.513481484460254,
+      "p99": 27.372846963330645
+    },
+    "worst_20_share_of_squared_error": 0.08047079254528358
+  },
+  "mean_baseline_test": {
+    "rmse": 18.6341204871194,
+    "mae": 10.471215546332758,
+    "r2": -0.12121926292145835
+  },
+  "prediction_context": "completed-trip metered fare, excluding tips and surcharges",
+  "elapsed_seconds": 231.88369925000006
+}
