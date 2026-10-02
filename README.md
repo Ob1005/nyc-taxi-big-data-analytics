@@ -19,7 +19,7 @@ flowchart LR
 
 ## Key findings: yellow taxis
 
-Yellow accepted pickups were 24,061,728 in 2020 and 39,556,497 in 2024 (+64.4%). The lowest observed month was 2020-04 (228,428 trips). This dataset starts in 2020, so it cannot measure a pre-pandemic decline.
+Yellow accepted pickups fell from 6,279,409 in January 2020 to 228,428 in 2020-04, the lowest observed month (96.4% lower). Annual volume rose 64.4% between 2020 and 2024.
 
 ![monthly trips](docs/results/yellow/monthly_trips.png)
 

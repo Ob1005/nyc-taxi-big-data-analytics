@@ -24,12 +24,13 @@ def findings(root):
     monthly = read(root/'yellow/eda/monthly_trips.json')
     yearly = {}
     for r in monthly: yearly[r['month'][:4]] = yearly.get(r['month'][:4],0)+r['trip_count']
-    low = min(monthly,key=lambda r:r['trip_count']); high = max(monthly,key=lambda r:r['trip_count'])
+    low = min(monthly,key=lambda r:r['trip_count'])
+    january = next(r for r in monthly if r['month']=='2020-01')
     hour = max(read(root/'yellow/eda/hourly_trips.json'),key=lambda r:r['trip_count'])
     bands = read(root/'yellow/eda/fare_by_distance.json')
     zones = read(root/'yellow/eda/highest_fare_dropoffs.json'); zone=zones[0]
     return [
-        (f"Yellow accepted pickups were {yearly['2020']:,} in 2020 and {yearly['2024']:,} in 2024 ({(yearly['2024']/yearly['2020']-1)*100:+.1f}%). The lowest observed month was {low['month']} ({low['trip_count']:,} trips). This dataset starts in 2020, so it cannot measure a pre-pandemic decline.", 'monthly_trips'),
+        (f"Yellow accepted pickups fell from {january['trip_count']:,} in January 2020 to {low['trip_count']:,} in {low['month']}, the lowest observed month ({(1-low['trip_count']/january['trip_count'])*100:.1f}% lower). Annual volume rose {(yearly['2024']/yearly['2020']-1)*100:.1f}% between 2020 and 2024.", 'monthly_trips'),
         (f"The busiest yellow pickup hour was {hour['pickup_hour']:02d}:00–{hour['pickup_hour']:02d}:59 New York time, with {hour['trip_count']:,} accepted trips across the study.", 'hourly_trips'),
         (f"Yellow mean recorded fare was ${bands[0]['mean_fare']:.2f} in the {bands[0]['distance_band']}-mile band and ${bands[-1]['mean_fare']:.2f} in the {bands[-1]['distance_band']}-mile band. These are descriptive averages, mixing routes and pricing periods.", 'fare_by_distance'),
         (f"Destination zone {zone['DOLocationID']} had the highest yellow mean fare (${zone['mean_fare']:.2f}, {zone['trip_count']:,} trips) among mapped zones with at least 500 accepted trips. This does not adjust for trip length.", 'highest_fare_dropoffs'),
