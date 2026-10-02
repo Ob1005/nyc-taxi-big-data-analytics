@@ -1,0 +1,242 @@
+[
+  {
+    "month": "2020-01",
+    "trip_count": 424768
+  },
+  {
+    "month": "2020-02",
+    "trip_count": 379871
+  },
+  {
+    "month": "2020-03",
+    "trip_count": 212149
+  },
+  {
+    "month": "2020-04",
+    "trip_count": 33209
+  },
+  {
+    "month": "2020-05",
+    "trip_count": 54085
+  },
+  {
+    "month": "2020-06",
+    "trip_count": 59235
+  },
+  {
+    "month": "2020-07",
+    "trip_count": 67323
+  },
+  {
+    "month": "2020-08",
+    "trip_count": 75966
+  },
+  {
+    "month": "2020-09",
+    "trip_count": 83133
+  },
+  {
+    "month": "2020-10",
+    "trip_count": 90028
+  },
+  {
+    "month": "2020-11",
+    "trip_count": 84328
+  },
+  {
+    "month": "2020-12",
+    "trip_count": 79665
+  },
+  {
+    "month": "2021-01",
+    "trip_count": 73091
+  },
+  {
+    "month": "2021-02",
+    "trip_count": 61783
+  },
+  {
+    "month": "2021-03",
+    "trip_count": 80192
+  },
+  {
+    "month": "2021-04",
+    "trip_count": 82269
+  },
+  {
+    "month": "2021-05",
+    "trip_count": 82831
+  },
+  {
+    "month": "2021-06",
+    "trip_count": 81823
+  },
+  {
+    "month": "2021-07",
+    "trip_count": 78827
+  },
+  {
+    "month": "2021-08",
+    "trip_count": 79038
+  },
+  {
+    "month": "2021-09",
+    "trip_count": 90259
+  },
+  {
+    "month": "2021-10",
+    "trip_count": 104816
+  },
+  {
+    "month": "2021-11",
+    "trip_count": 102658
+  },
+  {
+    "month": "2021-12",
+    "trip_count": 94353
+  },
+  {
+    "month": "2022-01",
+    "trip_count": 57748
+  },
+  {
+    "month": "2022-02",
+    "trip_count": 64364
+  },
+  {
+    "month": "2022-03",
+    "trip_count": 72779
+  },
+  {
+    "month": "2022-04",
+    "trip_count": 70934
+  },
+  {
+    "month": "2022-05",
+    "trip_count": 71120
+  },
+  {
+    "month": "2022-06",
+    "trip_count": 67581
+  },
+  {
+    "month": "2022-07",
+    "trip_count": 58598
+  },
+  {
+    "month": "2022-08",
+    "trip_count": 60117
+  },
+  {
+    "month": "2022-09",
+    "trip_count": 63353
+  },
+  {
+    "month": "2022-10",
+    "trip_count": 64031
+  },
+  {
+    "month": "2022-11",
+    "trip_count": 57841
+  },
+  {
+    "month": "2022-12",
+    "trip_count": 67219
+  },
+  {
+    "month": "2023-01",
+    "trip_count": 63971
+  },
+  {
+    "month": "2023-02",
+    "trip_count": 61007
+  },
+  {
+    "month": "2023-03",
+    "trip_count": 67596
+  },
+  {
+    "month": "2023-04",
+    "trip_count": 61341
+  },
+  {
+    "month": "2023-05",
+    "trip_count": 64665
+  },
+  {
+    "month": "2023-06",
+    "trip_count": 61191
+  },
+  {
+    "month": "2023-07",
+    "trip_count": 56920
+  },
+  {
+    "month": "2023-08",
+    "trip_count": 56282
+  },
+  {
+    "month": "2023-09",
+    "trip_count": 61085
+  },
+  {
+    "month": "2023-10",
+    "trip_count": 61475
+  },
+  {
+    "month": "2023-11",
+    "trip_count": 59673
+  },
+  {
+    "month": "2023-12",
+    "trip_count": 59919
+  },
+  {
+    "month": "2024-01",
+    "trip_count": 52744
+  },
+  {
+    "month": "2024-02",
+    "trip_count": 49919
+  },
+  {
+    "month": "2024-03",
+    "trip_count": 53585
+  },
+  {
+    "month": "2024-04",
+    "trip_count": 52351
+  },
+  {
+    "month": "2024-05",
+    "trip_count": 56825
+  },
+  {
+    "month": "2024-06",
+    "trip_count": 51104
+  },
+  {
+    "month": "2024-07",
+    "trip_count": 47975
+  },
+  {
+    "month": "2024-08",
+    "trip_count": 48072
+  },
+  {
+    "month": "2024-09",
+    "trip_count": 50639
+  },
+  {
+    "month": "2024-10",
+    "trip_count": 52592
+  },
+  {
+    "month": "2024-11",
+    "trip_count": 48575
+  },
+  {
+    "month": "2024-12",
+    "trip_count": 50045
+  }
+]

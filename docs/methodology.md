@@ -1,57 +1,55 @@
 # Methodology
 
-## Prediction question
+## Question and population
 
-Estimate the metered time-and-distance fare for a completed trip. The distance and duration are realized measurements, not information available when booking. The target is `fare_amount`, excluding tips and surcharges. This is an analytical estimator, not a pre-trip quote service.
+Estimate `fare_amount` before travel, given the pickup and destination zones, and compare it with fare reconstruction after travel. The target is the recorded fare component, excluding separately recorded tips, tolls and surcharges. Yellow is the primary fleet; green provides a second comparison with the same procedure.
 
-## Coverage and data quality
+The source comprises every monthly yellow and green TLC Parquet file from 2020 through 2024. Each file is normalized separately before combining it, because numeric types vary between monthly files. All accepted trips contribute to exploratory analysis; only modelling uses a sample. Cleaned records stay in Parquet and are queried with Spark SQL. Small published tables are JSON.
 
-The main experiment reads 60 monthly files per fleet, January 2020 through December 2024. Missing requested files cause the run to fail rather than silently analyze a subset. Each monthly file is projected onto a typed common schema before name-based union, avoiding positional errors from schema drift. The efficient default uses Parquet. Optional CSV conversion produces partitioned CSV directories and retains the originals; it does not reduce disk use.
+Payment type is excluded from model inputs: it is not a reliable pre-trip attribute and describes payment method or status rather than trip geometry. A positive recorded fare does not establish that the trip was paid. No payment-code restriction is applied.
 
-Reject missing timestamps, pickup years outside 2020–2024, nonfinite/nonpositive distance or fare, and nonpositive duration. Each record receives one first-failure reason, so quality counts reconcile with the raw source count. Missing passenger counts are retained because that driver-entered field is not used for modeling. The population is trips with positive recorded fares, not confirmed paid trips. A no-charge or disputed trip can still have a positive recorded fare. Payment codes 0 and 3–6 and missing payment information are retained when the other rules pass. Zero/negative recorded fares are rejected irrespective of payment code.
+## Cleaning and first-failure accounting
 
-Extreme positive values are retained in the cleaned data and EDA. They are investigated through distribution summaries and worst-residual exports. For modeling, distance and duration inputs are capped at training-set 99.9th percentiles. Raw measurements and fare labels remain unchanged. Caps are learned only from training records; they are applied to all later data using the saved preprocessing pipeline. An uncapped linear-regression comparison uses the same base training and validation records to assess sensitivity to this decision.
+All thresholds live in `src/nyc_taxi/config.py`. These are stated assumptions defining ordinary plausible taxi trips, not proof that every rejected record is erroneous. Unusual legitimate trips may be excluded. Rules execute in the order below; a row with several failures is counted only against its first failure.
 
-## Storage
+| Order | Rule / reason | Why |
+|---|---|---|
+| 1 | Both timestamps present / `missing_timestamp` | Duration and temporal evaluation require timestamps. |
+| 2 | Pickup year 2020–2024 / `outside_period` | Match the study population, including spillover dates in source files. |
+| 3 | Distance finite and positive / `distance_missing_or_nonpositive` | Missing, invalid or nonpositive distance cannot describe the journey. Positive infinity fails the next rule. |
+| 4 | Distance ≤100 miles / `distance_over_limit` | Exclude unusually long journeys and implausible distance records from this NYC fare study. |
+| 5 | Duration ≥1 minute / `duration_too_short` | Avoid zero, reversed and near-zero timestamp intervals. |
+| 6 | Duration ≤6 hours / `duration_too_long` | Exclude likely recording problems and journeys outside an ordinary taxi-trip scope. |
+| 7 | Distance / duration ≤80 mph / `speed_over_limit` | A sustained average above this limit is implausible for ordinary NYC taxi travel. |
+| 8 | Fare finite and positive / `fare_missing_or_nonpositive` | Define a positive-recorded-fare population; missing and invalid values are unusable targets. Positive infinity fails the next rule. |
+| 9 | Fare ≤$500 / `fare_over_limit` | Exclude exceptionally priced trips from the chosen ordinary-fare population. |
 
-All accepted records are saved as cleaned Parquet, which is the full analytical dataset. Full-data frames are scanned rather than cached, avoiding large driver/disk spill requirements. Only sampled modeling records are cached.
+Duration is elapsed seconds divided by 60. Year, hour, weekday, month and pricing boundaries use New York local time. Boundary values are included. Rejection counts are order-dependent and are not independent estimates of each problem's prevalence. The run checks the combined counts against source-file footer row totals. [Results](results/README.md) reports every reason, including zero counts, and the source example that motivated inspecting implausible distances.
 
-By default, SQLite contains a **bounded snapshot of at most 100,000 accepted rows per fleet**, for portable SQL inspection. This snapshot is not a representative statistical sample and is not used to train models or generate EDA. It is explicitly labeled in `run.json`. `--sqlite-limit 0` requests every accepted row, subject to a conservative disk-headroom check. This differs from the original full SQLite export to keep a local five-year run practical on limited storage.
+## Exploratory analysis
 
-SQLite repartitions to approximately 50,000 rows per partition before streaming 10,000-row insert batches. It validates row counts and integrity before atomically replacing the database. This bounds driver transfer memory, but full SQLite export remains a serial bottleneck. Timestamps are formatted in Spark in New York local time before serialization. Source timestamps lack an explicit offset, so daylight-saving ambiguity remains a limitation.
+Four Spark SQL queries summarize accepted pickups by month, pickups by hour, mean fares by distance band, and highest mean fares by destination zone. The destination ranking requires at least 500 trips and restricts IDs to mapped zones 1–263, excluding unknown/outside codes. The ranking is descriptive and does not control for route length. Demand comparisons begin in 2020; there is no pre-pandemic comparison year. Green uses the same queries but receives shorter treatment in the walkthrough.
 
-## EDA definitions
+## Sampling and temporal evaluation
 
-Distance intervals are [0,1), [1,2), [2,5), [5,10), [10,20), and [20,infinity) miles; zero distances have already been rejected. Long trips are strictly greater than 10 miles. Weekend days are Saturday and Sunday.
+A seeded Bernoulli sample uses 0.2% of accepted yellow trips and 5% of accepted green trips by default. The larger green fraction compensates for its smaller fleet. These fractions are practical local-machine compute choices, not optimized statistical thresholds. Actual sample sizes vary; every split count is reported. Both feature settings and the mean baseline use exactly the same sampled rows within a fleet.
 
-Highest-average-fare drop-off rankings require at least 500 accepted trips and valid TLC zone IDs. Counts accompany averages to make their support visible. Zone IDs remain categorical identifiers; joining neighborhood names is a future extension. Weekday/weekend results include totals and trips per observed date; zero-trip dates are not included, so this is not full calendar normalization.
+Train on pickups in 2020–2022, compare candidates on 2023, and evaluate each selected setting once on 2024. Temporal splitting better matches use on future trips than a random split, but supplies only one historical holdout. Test results do not guide candidate selection. Models are fitted on training only, without refitting on validation. The baseline predicts the training mean fare.
 
-## Modeling and sample size
+## Information available to each setting
 
-The starting model sample fractions reproduce the original choices: 0.2% yellow and 5% green. They apply to modeling only, not to data cleaning or EDA. A fixed seed defines the sample. Training uses 2020–2022, validation 2023 and test 2024.
+Both settings contain pickup and destination zone, pickup hour, weekday and month, a known pricing-regime flag, and historical route distance/duration medians. Pre-trip assumes the destination has already been supplied; it is not a destination predictor. Route medians are computed from the training sample only with Spark's approximate median aggregation, grouped by pickup/destination pair. Missing or unseen pairs use the overall training-sample distance and duration medians. The fitted lookup and fallback values are saved with the model. Encoding vocabularies are also fitted only on training; unseen categories use an unknown category.
 
-Sample-size sensitivity is evaluated using a pool twice as large. The validation and test samples stay fixed while training grows. Three regressors are compared on the base training sample: regularized linear regression, random forest and gradient-boosted trees. The lowest validation-RMSE model is then fitted on the larger training sample with preprocessing relearned on that larger sample. The larger candidate is retained only if validation RMSE improves. This is a limited learning-curve comparison, not an exhaustive tuning search. The test sample is scored only after choosing the final candidate.
+The pre-trip model never uses that trip's realized distance or duration. The post-trip setting adds both, providing a reconstruction upper bound. Historical route medians are kept fixed for validation and test; no later outcomes enter them. Training features use training route summaries, a conventional in-sample aggregate; no training-score claim is made.
 
-Features include realized distance and duration, hour, weekday, month, pickup zone, drop-off zone and distance bin. Training-only `StringIndexer` and one-hot encoders handle categorical values, including unseen categories, before `VectorAssembler`. Payment method, final rate code, total amount, tips and fare-derived fields are excluded from inputs. Time fields are numeric; cyclical encoding has not been evaluated.
+The pricing flag is true for pickups on or after December 19, 2022, the effective date in the [TLC fare-change notice](https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_22_02_english.pdf). This is known external information, not a learned change point. The notice ties use of the new tariff to meter recalibration, so the date flag is a pricing-period proxy rather than evidence that every meter changed that day. Only the final days of the training period reflect the new regime, so its coverage is limited. The flag allows a model to represent a regime difference; without an ablation or causal design, no isolated accuracy gain or causal effect is claimed.
 
-## Evaluation and diagnostics
+## Models and errors
 
-Report validation and held-out RMSE, MAE and R², together with a training-mean baseline. Diagnostics include median/p90/p99 absolute errors, errors by fare band, and the 20 worst residuals. The share of squared error contributed by those 20 records helps distinguish broad poor performance from isolated extreme errors.
+Linear regression is a simple additive reference; random forest and gradient-boosted trees allow nonlinear interactions. Each feature setting selects the lowest validation RMSE among these three candidates. Hour, weekday and month are kept as integer inputs for a simple shared representation; the linear model cannot represent cyclic time patterns as flexibly as the trees. Modest fixed tree settings limit compute and keep the comparison explainable; there is no hyperparameter search. RMSE emphasizes larger misses. Test MAE, RMSE, R² and the percentages within $2 and $5 describe complementary aspects of performance. Predictions are not rounded or forced positive, so these metrics expose errors as produced by the fitted model.
 
-Prediction plots use a seeded hash ranking over trip fields to choose up to 2,000 records across the held-out dataset, avoiding bias toward the first file or partition. Exact duplicate trips receive the same hash and tied selection is not guaranteed stable. Both full-range and $0–100 views are shown; reported metrics always cover the entire held-out sample.
+Error by fare band and the 20 largest absolute test residuals are saved after filtering. They help identify expensive-trip failures that an overall average can conceal; they do not change model selection or the evaluated population.
 
-## Runtime and reproducibility
+## Execution limits
 
-`experiment.json` records local environment details and wall-clock processing time. Each `run.json` breaks down load/clean/Parquet, SQLite snapshot, EDA and modeling time. Downloads and notebook presentation are excluded from the main processing timer. This is a measured local run, not a clustered benchmark.
-
-Source filenames, row counts and byte sizes are recorded in the download manifest; this is not a cryptographic content lock. Upstream files may change. Experiments are written to separate output roots when preservation is needed; cleaned data directories use overwrite semantics. Published compact results include metrics and aggregates, while large data, database and model binaries are excluded from Git.
-
-## Pricing change near the temporal split
-
-The [official TLC notice](https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_22_02_english.pdf) establishes a meter fare change effective 19 December 2022. Most training trips precede it, while validation/test trips follow it. The model has no explicit pricing-regime feature. Underestimation in the plots is consistent with this shift, but its contribution has not been isolated experimentally. This is a meaningful temporal-generalization limitation, not a reason to revert to random testing that mixes periods.
-
-## Payment categories
-
-The payment table preserves each original code and labels its meaning. Card/cash are payment methods; no charge/dispute/voided are payment statuses; code zero denotes Flex Fare in the current TLC dictionary. Reported unknown (5), missing information and unrecognized values remain separate. The supplied 2018/2022 dictionaries omit zero; the March 2025 TLC mapping is cited explicitly and is not independently verified for every historical zero-coded record.
-
-Payment-method conclusions compare explicitly coded card/cash records; status and missingness counts are shown alongside them without assuming a method for those trips. These records still contribute to EDA and the existing model population. No payment-based exclusions or model retraining were introduced. A card/cash-only sensitivity comparison is optional future work.
+Spark runs on one machine with two local worker threads and a 4 GB driver. Full-data cleaning and SQL aggregation stream through Parquet; only the modelling sample and transformed sample are cached. Runtime and environment are measured by each run, not extrapolated to a cluster. This is an analysis pipeline, not a deployed estimator.

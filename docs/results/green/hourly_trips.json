@@ -1,0 +1,98 @@
+[
+  {
+    "pickup_hour": 0,
+    "trip_count": 78121
+  },
+  {
+    "pickup_hour": 1,
+    "trip_count": 53159
+  },
+  {
+    "pickup_hour": 2,
+    "trip_count": 35916
+  },
+  {
+    "pickup_hour": 3,
+    "trip_count": 30529
+  },
+  {
+    "pickup_hour": 4,
+    "trip_count": 34849
+  },
+  {
+    "pickup_hour": 5,
+    "trip_count": 39844
+  },
+  {
+    "pickup_hour": 6,
+    "trip_count": 90295
+  },
+  {
+    "pickup_hour": 7,
+    "trip_count": 184846
+  },
+  {
+    "pickup_hour": 8,
+    "trip_count": 253562
+  },
+  {
+    "pickup_hour": 9,
+    "trip_count": 285298
+  },
+  {
+    "pickup_hour": 10,
+    "trip_count": 290062
+  },
+  {
+    "pickup_hour": 11,
+    "trip_count": 288363
+  },
+  {
+    "pickup_hour": 12,
+    "trip_count": 290364
+  },
+  {
+    "pickup_hour": 13,
+    "trip_count": 286777
+  },
+  {
+    "pickup_hour": 14,
+    "trip_count": 311311
+  },
+  {
+    "pickup_hour": 15,
+    "trip_count": 329253
+  },
+  {
+    "pickup_hour": 16,
+    "trip_count": 335213
+  },
+  {
+    "pickup_hour": 17,
+    "trip_count": 338568
+  },
+  {
+    "pickup_hour": 18,
+    "trip_count": 324088
+  },
+  {
+    "pickup_hour": 19,
+    "trip_count": 267891
+  },
+  {
+    "pickup_hour": 20,
+    "trip_count": 205236
+  },
+  {
+    "pickup_hour": 21,
+    "trip_count": 169021
+  },
+  {
+    "pickup_hour": 22,
+    "trip_count": 142322
+  },
+  {
+    "pickup_hour": 23,
+    "trip_count": 116048
+  }
+]

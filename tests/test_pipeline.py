@@ -1,98 +1,80 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import sqlite3
+import math
 import pytest
-from pyspark.sql import SparkSession
-from nyc_taxi.pipeline import clean, features, normalize, save_sqlite
+from pyspark.sql import SparkSession, functions as F
+from nyc_taxi.pipeline import clean, features, normalize, load, fit_history, add_history, fit_preprocessing, regression_metrics
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def spark():
-    session = SparkSession.builder.master("local[2]").config("spark.ui.enabled", "false").config("spark.sql.shuffle.partitions", "2").config("spark.sql.session.timeZone", "America/New_York").getOrCreate()
-    session.sparkContext.setLogLevel("ERROR")
-    yield session
-    session.stop()
+    s = (SparkSession.builder.master('local[2]').config('spark.ui.enabled', 'false')
+         .config('spark.sql.shuffle.partitions', '2').config('spark.sql.session.timeZone', 'America/New_York').getOrCreate())
+    s.sparkContext.setLogLevel('ERROR'); yield s; s.stop()
 
 
-def test_cleaning_boundaries_and_sqlite(spark, tmp_path):
-    pickup, dropoff = datetime(2024, 1, 6, 12, tzinfo=ZoneInfo("America/New_York")), datetime(2024, 1, 6, 12, 30, tzinfo=ZoneInfo("America/New_York"))
-    rows = [(pickup, dropoff, 1.0, 12.0), (pickup, dropoff, 0.0, 12.0),
-            (pickup, pickup, 2.0, 12.0), (pickup, dropoff, float("nan"), 12.0),
-            (None, dropoff, 2.0, 12.0), (pickup, dropoff, 2.0, -1.0)]
-    frame = spark.createDataFrame(rows, "pickup_datetime timestamp, dropoff_datetime timestamp, trip_distance double, fare_amount double")
-    accepted, counts, cached = clean(frame)
-    assert sum(counts.values()) == 6
-    assert counts["accepted"] == 1
-    row = features(accepted).first()
-    assert row.distance_bin == "1-2"
-    assert row.pickup_weekday == 7
-    assert row.pickup_hour == 12
-    assert row.duration_minutes == 30
-    path = tmp_path / "trips.db"
-    assert save_sqlite(accepted, path, batch_size=1) == 1
-    with sqlite3.connect(path) as connection:
-        assert connection.execute("SELECT pickup_datetime FROM trips").fetchone()[0] == "2024-01-06 12:00:00"
-    assert save_sqlite(accepted.limit(0), path) == 0
-    with sqlite3.connect(path) as connection:
-        assert connection.execute("SELECT COUNT(*) FROM trips").fetchone()[0] == 0
-    cached.unpersist()
+def test_cleaning_thresholds_and_first_failure(spark):
+    t = datetime(2024, 1, 1, tzinfo=ZoneInfo('America/New_York'))
+    specs = [(1, 1, 1, 'accepted'), (100, 360, 500, 'accepted'), (40, 30, 20, 'accepted'),
+             (0, 0, -1, 'distance_missing_or_nonpositive'), (101, 30, 20, 'distance_over_limit'),
+             (1, 0.5, 20, 'duration_too_short'), (1, 361, 20, 'duration_too_long'),
+             (41, 30, 20, 'speed_over_limit'), (1, 30, 0, 'fare_missing_or_nonpositive'),
+             (1, 30, 501, 'fare_over_limit'), (float('nan'), 30, 20, 'distance_missing_or_nonpositive'),
+             (float('inf'), 30, 20, 'distance_over_limit'), (1, 30, float('inf'), 'fare_over_limit')]
+    rows = [(t, t+timedelta(minutes=m), float(d), float(f), expected) for d,m,f,expected in specs]
+    rows.extend([(None,t,1.,20.,'missing_timestamp'),
+                 (t.replace(year=2019), t.replace(year=2019)+timedelta(minutes=30),1.,20.,'outside_period'),
+                 (t.replace(year=2025), t.replace(year=2025)+timedelta(minutes=30),1.,20.,'outside_period')])
+    df = spark.createDataFrame(rows, 'pickup_datetime timestamp, dropoff_datetime timestamp, trip_distance double, fare_amount double, expected string')
+    accepted, counts, tagged = clean(df)
+    assert sum(counts.values()) == len(rows)
+    assert counts['accepted'] == accepted.count() == 3
+    assert tagged.filter('quality_reason != expected').count() == 0
 
 
-def test_schema_normalization(spark):
-    row = ("2024-01-01 12:00:00", "2024-01-01 12:30:00", "1.5", "12", None, "1", "2", "1")
-    df = spark.createDataFrame([row], "lpep_pickup_datetime string, lpep_dropoff_datetime string, trip_distance string, fare_amount string, passenger_count string, PULocationID string, DOLocationID string, payment_type string")
-    result = normalize(df, "green").first()
-    assert result.trip_distance == 1.5
-    assert result.passenger_count is None
-    with pytest.raises(ValueError, match="missing required column"):
-        normalize(df.drop("payment_type"), "green")
-
-
-def test_failed_export_preserves_database(spark, tmp_path, monkeypatch):
-    from pyspark.sql import DataFrame
-    frame = spark.createDataFrame([(datetime(2024, 1, 1), 1.0)], 'pickup_datetime timestamp, fare_amount double')
-    path = tmp_path / 'trips.db'
-    save_sqlite(frame, path)
-    def broken_iterator(self):
-        raise RuntimeError('simulated export failure')
-    monkeypatch.setattr(DataFrame, 'toLocalIterator', broken_iterator)
-    with pytest.raises(RuntimeError, match='simulated export failure'):
-        save_sqlite(frame, path)
-    with sqlite3.connect(path) as connection:
-        assert connection.execute('SELECT fare_amount FROM trips').fetchone()[0] == 1.0
-    assert list(tmp_path.glob('*.db')) == [path]
-
-
-def test_monthly_csv_roundtrip_and_schema_drift(spark, tmp_path):
-    from nyc_taxi.pipeline import load
-    from pyspark.sql import functions as F
-    row = ('2024-01-01 12:00:00', '2024-01-01 12:30:00', '1.5', '12', None, '1', '2', '1')
-    frame = spark.createDataFrame([row], 'tpep_pickup_datetime string, tpep_dropoff_datetime string, trip_distance string, fare_amount string, passenger_count string, PULocationID string, DOLocationID string, payment_type string')
-    raw = tmp_path / 'raw'
-    frame.write.parquet(str(raw / 'yellow_tripdata_2024-01.parquet'))
-    frame.select(*reversed(frame.columns)).withColumn('new_optional_field', F.lit(7)).write.parquet(str(raw / 'yellow_tripdata_2024-02.parquet'))
-    result = load(spark, raw, 'yellow', tmp_path / 'csv')
+def test_normalization_and_monthly_schema_drift(spark, tmp_path):
+    df = spark.createDataFrame([('2024-01-01 12:00:00','2024-01-01 12:30:00','1.5','12','1','2')],
+        'tpep_pickup_datetime string, tpep_dropoff_datetime string, trip_distance string, fare_amount string, PULocationID string, DOLocationID string')
+    df.write.parquet(str(tmp_path/'yellow_tripdata_2024-01.parquet'))
+    df.select(*reversed(df.columns)).withColumn('unused', F.lit(7)).write.parquet(str(tmp_path/'yellow_tripdata_2024-02.parquet'))
+    result = load(spark, tmp_path, 'yellow', years=[2024], months=[1,2])
     assert result.count() == 2
-    assert {r.trip_distance for r in result.collect()} == {1.5}
+    assert result.first().trip_distance == 1.5
     assert result.schema['pickup_datetime'].dataType.simpleString() == 'timestamp'
-    assert 'new_optional_field' not in result.columns
+    with pytest.raises(ValueError, match='missing required column'): normalize(df.drop('fare_amount'), 'yellow')
+    with pytest.raises(ValueError, match='Missing 1 source files'): load(spark,tmp_path,'yellow',years=[2024],months=[1,2,3])
 
 
-def test_feature_caps_and_categories_learn_only_from_training(spark):
-    from nyc_taxi.pipeline import fit_preprocessing
+def test_training_history_fallback_and_feature_availability(spark):
     from nyc_taxi.cli import demo_data
-    from pyspark.sql import functions as F
-    training = features(demo_data(spark, 'yellow'))
-    preprocessing, caps = fit_preprocessing(training)
-    validation = training.limit(1).withColumn('trip_distance', F.lit(1000000.0)).withColumn('duration_minutes', F.lit(1000000.0)).withColumn('PULocationID', F.lit(999))
-    transformed = preprocessing.transform(validation).first()
-    assert transformed.distance_input == caps['trip_distance']
-    assert transformed.duration_input == caps['duration_minutes']
-    assert transformed.trip_distance == 1000000.0  # original measurements remain auditable
-    assert all(__import__('math').isfinite(v) for v in transformed.features)
-    assert caps['trip_distance'] < 30
+    training = features(clean(demo_data(spark,'yellow'))[0])
+    medians, fallback = fit_history(training)
+    heldout = training.limit(1).withColumn('PULocationID',F.lit(999)).withColumn('DOLocationID',F.lit(999))
+    enriched = add_history(heldout, medians, fallback)
+    row = enriched.first()
+    assert row.unseen_pair and row.historical_distance == fallback['historical_distance']
+    assert row.historical_duration == fallback['historical_duration']
+    train_history = add_history(training, medians, fallback)
+    for setting in ('pre_trip','post_trip'):
+        p = fit_preprocessing(train_history, setting)
+        original = p.transform(enriched).first().features
+        changed = p.transform(enriched.withColumn('trip_distance',F.lit(99.)).withColumn('duration_minutes',F.lit(350.))).first().features
+        assert all(math.isfinite(v) for v in original)
+        assert (original == changed) == (setting == 'pre_trip')
+    # Held-out rows were never passed to fit_history: the fitted summaries stay fixed.
+    assert medians.filter('PULocationID = 999').count() == 0
 
 
-def test_requested_source_period_must_be_complete(spark, tmp_path):
-    from nyc_taxi.pipeline import load
-    with pytest.raises(ValueError, match='Missing 2 source files'):
-        load(spark, tmp_path, 'green', years=[2024], months=[1, 2])
+def test_pricing_flag_boundary_in_new_york(spark):
+    times = ['2022-12-18 23:59:59','2022-12-19 00:00:00']
+    df = spark.createDataFrame([(t,1.) for t in times], 'pickup_datetime string, trip_distance double').withColumn('pickup_datetime',F.to_timestamp('pickup_datetime'))
+    assert [r.new_fare_regime for r in features(df).orderBy('pickup_datetime').collect()] == [0.,1.]
+
+
+def test_metrics_tolerance_boundaries(spark):
+    df = spark.createDataFrame([(10.,12.),(10.,15.),(10.,16.),(20.,20.)], 'fare_amount double, prediction double')
+    m = regression_metrics(df)
+    assert m['within_2_pct'] == 50
+    assert m['within_5_pct'] == 75
+    assert m['mae'] == 3.25
+    assert m['rmse'] == pytest.approx(math.sqrt(65/4))
+    assert m['r2'] == pytest.approx(1-(65/4)/18.75)

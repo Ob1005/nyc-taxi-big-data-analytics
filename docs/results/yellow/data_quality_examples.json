@@ -1,0 +1,9 @@
+[
+  {
+    "pickup_datetime": "2024-02-29 13:17:33",
+    "trip_distance": 6860.8,
+    "duration_minutes": 38.61666666666667,
+    "fare_amount": 32.5,
+    "quality_reason": "distance_over_limit"
+  }
+]

@@ -1,7 +1,0 @@
-payment_type,count,payment_label,category_group
-1,129079036,Credit card,Payment method
-2,31629374,Cash,Payment method
-0,8174132,Flex Fare (current TLC definition),Fare regime
-4,791941,Dispute,Payment status
-3,590556,No charge,Payment status
-5,15,Unknown (reported code),Unknown

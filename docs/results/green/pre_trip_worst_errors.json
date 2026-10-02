@@ -1,0 +1,202 @@
+[
+  {
+    "pickup_datetime": "2024-05-27 18:47:54",
+    "PULocationID": 62,
+    "DOLocationID": 62,
+    "trip_distance": 0.68,
+    "duration_minutes": 8.416666666666666,
+    "fare_amount": 315.0,
+    "prediction": 15.021896886025683,
+    "absolute_error": 299.9781031139743
+  },
+  {
+    "pickup_datetime": "2024-09-19 14:36:28",
+    "PULocationID": 62,
+    "DOLocationID": 61,
+    "trip_distance": 0.77,
+    "duration_minutes": 6.033333333333333,
+    "fare_amount": 315.0,
+    "prediction": 17.450987418398803,
+    "absolute_error": 297.5490125816012
+  },
+  {
+    "pickup_datetime": "2024-10-18 17:10:28",
+    "PULocationID": 76,
+    "DOLocationID": 77,
+    "trip_distance": 1.35,
+    "duration_minutes": 18.716666666666665,
+    "fare_amount": 300.0,
+    "prediction": 17.724257778856995,
+    "absolute_error": 282.275742221143
+  },
+  {
+    "pickup_datetime": "2024-06-21 12:42:31",
+    "PULocationID": 171,
+    "DOLocationID": 92,
+    "trip_distance": 0.9,
+    "duration_minutes": 4.983333333333333,
+    "fare_amount": 300.0,
+    "prediction": 23.49850232908354,
+    "absolute_error": 276.5014976709165
+  },
+  {
+    "pickup_datetime": "2024-11-05 09:10:02",
+    "PULocationID": 226,
+    "DOLocationID": 223,
+    "trip_distance": 17.84,
+    "duration_minutes": 340.43333333333334,
+    "fare_amount": 261.3,
+    "prediction": 17.5156982016627,
+    "absolute_error": 243.7843017983373
+  },
+  {
+    "pickup_datetime": "2024-08-27 15:42:35",
+    "PULocationID": 223,
+    "DOLocationID": 223,
+    "trip_distance": 8.0,
+    "duration_minutes": 337.6,
+    "fare_amount": 245.9,
+    "prediction": 10.696022862058125,
+    "absolute_error": 235.20397713794188
+  },
+  {
+    "pickup_datetime": "2024-09-06 18:31:11",
+    "PULocationID": 93,
+    "DOLocationID": 265,
+    "trip_distance": 36.72,
+    "duration_minutes": 43.95,
+    "fare_amount": 300.0,
+    "prediction": 68.0919449384794,
+    "absolute_error": 231.9080550615206
+  },
+  {
+    "pickup_datetime": "2024-08-13 13:36:11",
+    "PULocationID": 7,
+    "DOLocationID": 223,
+    "trip_distance": 15.52,
+    "duration_minutes": 314.1666666666667,
+    "fare_amount": 237.5,
+    "prediction": 12.12698157284645,
+    "absolute_error": 225.37301842715354
+  },
+  {
+    "pickup_datetime": "2024-03-15 18:31:46",
+    "PULocationID": 55,
+    "DOLocationID": 165,
+    "trip_distance": 3.55,
+    "duration_minutes": 22.216666666666665,
+    "fare_amount": 245.0,
+    "prediction": 27.402208286169977,
+    "absolute_error": 217.59779171383002
+  },
+  {
+    "pickup_datetime": "2024-01-06 19:01:43",
+    "PULocationID": 244,
+    "DOLocationID": 265,
+    "trip_distance": 32.8,
+    "duration_minutes": 75.8,
+    "fare_amount": 240.3,
+    "prediction": 43.42435952103076,
+    "absolute_error": 196.87564047896925
+  },
+  {
+    "pickup_datetime": "2024-08-22 21:12:12",
+    "PULocationID": 95,
+    "DOLocationID": 265,
+    "trip_distance": 36.97,
+    "duration_minutes": 71.31666666666666,
+    "fare_amount": 249.0,
+    "prediction": 53.107078835811215,
+    "absolute_error": 195.89292116418878
+  },
+  {
+    "pickup_datetime": "2024-07-20 00:07:05",
+    "PULocationID": 93,
+    "DOLocationID": 93,
+    "trip_distance": 0.24,
+    "duration_minutes": 4.533333333333333,
+    "fare_amount": 225.0,
+    "prediction": 30.26978867137043,
+    "absolute_error": 194.73021132862957
+  },
+  {
+    "pickup_datetime": "2024-06-08 12:55:51",
+    "PULocationID": 92,
+    "DOLocationID": 171,
+    "trip_distance": 25.23,
+    "duration_minutes": 250.0,
+    "fare_amount": 211.6,
+    "prediction": 17.876714204342687,
+    "absolute_error": 193.72328579565732
+  },
+  {
+    "pickup_datetime": "2024-07-21 23:42:53",
+    "PULocationID": 93,
+    "DOLocationID": 265,
+    "trip_distance": 41.84,
+    "duration_minutes": 58.0,
+    "fare_amount": 259.2,
+    "prediction": 67.47603338676579,
+    "absolute_error": 191.7239666132342
+  },
+  {
+    "pickup_datetime": "2024-11-01 13:50:58",
+    "PULocationID": 92,
+    "DOLocationID": 92,
+    "trip_distance": 23.07,
+    "duration_minutes": 256.23333333333335,
+    "fare_amount": 212.3,
+    "prediction": 21.38624854448469,
+    "absolute_error": 190.91375145551532
+  },
+  {
+    "pickup_datetime": "2024-02-13 18:03:46",
+    "PULocationID": 92,
+    "DOLocationID": 265,
+    "trip_distance": 33.21,
+    "duration_minutes": 163.93333333333334,
+    "fare_amount": 244.5,
+    "prediction": 58.072425702075094,
+    "absolute_error": 186.4275742979249
+  },
+  {
+    "pickup_datetime": "2024-12-31 09:16:11",
+    "PULocationID": 131,
+    "DOLocationID": 265,
+    "trip_distance": 10.22,
+    "duration_minutes": 10.633333333333333,
+    "fare_amount": 245.0,
+    "prediction": 61.77083805280052,
+    "absolute_error": 183.2291619471995
+  },
+  {
+    "pickup_datetime": "2024-10-29 22:35:48",
+    "PULocationID": 247,
+    "DOLocationID": 201,
+    "trip_distance": 28.87,
+    "duration_minutes": 49.233333333333334,
+    "fare_amount": 200.0,
+    "prediction": 18.524578338913617,
+    "absolute_error": 181.4754216610864
+  },
+  {
+    "pickup_datetime": "2024-02-22 15:39:01",
+    "PULocationID": 92,
+    "DOLocationID": 92,
+    "trip_distance": 22.84,
+    "duration_minutes": 242.58333333333334,
+    "fare_amount": 195.5,
+    "prediction": 19.841936884739425,
+    "absolute_error": 175.65806311526057
+  },
+  {
+    "pickup_datetime": "2024-06-09 14:44:38",
+    "PULocationID": 75,
+    "DOLocationID": 75,
+    "trip_distance": 27.27,
+    "duration_minutes": 212.5,
+    "fare_amount": 183.6,
+    "prediction": 8.40886377629609,
+    "absolute_error": 175.1911362237039
+  }
+]

@@ -1,7 +1,33 @@
 {
-  "accepted": 170265054,
-  "invalid_distance": 2863932,
-  "outside_period": 1204,
-  "invalid_fare": 1476671,
-  "invalid_duration": 82583
+  "source_rows": 174689444,
+  "accepted_rows": 169430105,
+  "first_failure_counts": {
+    "duration_too_short": 815778,
+    "accepted": 169430105,
+    "outside_period": 1204,
+    "fare_missing_or_nonpositive": 1353693,
+    "fare_over_limit": 497,
+    "duration_too_long": 202685,
+    "speed_over_limit": 13969,
+    "distance_missing_or_nonpositive": 2863932,
+    "distance_over_limit": 7581
+  },
+  "thresholds": {
+    "first_year": 2020,
+    "last_year": 2024,
+    "max_distance_miles": 100.0,
+    "min_duration_minutes": 1.0,
+    "max_duration_minutes": 360.0,
+    "max_average_speed_mph": 80.0,
+    "max_fare_dollars": 500.0
+  },
+  "examples": [
+    {
+      "pickup_datetime": "2024-02-29 13:17:33",
+      "trip_distance": 6860.8,
+      "duration_minutes": 38.61666666666667,
+      "fare_amount": 32.5,
+      "quality_reason": "distance_over_limit"
+    }
+  ]
 }

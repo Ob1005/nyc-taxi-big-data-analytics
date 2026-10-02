@@ -1,177 +1,163 @@
-"""Publish compact, measured results and regenerate the portfolio documentation."""
-import argparse
-import csv
+"""Publish findings directly from the latest real run; never type result values."""
 import json
 import shutil
-import sqlite3
-from datetime import datetime
 from pathlib import Path
-from .pipeline import payment_description
 
 
-def rows(path):
-    with Path(path).open() as stream:
-        return list(csv.DictReader(stream))
+def read(path): return json.loads(Path(path).read_text())
 
 
-def publish(run_root, destination=Path('docs/results')):
-    run_root, destination = Path(run_root), Path(destination)
-    experiment = json.loads((run_root / 'experiment.json').read_text())
-    destination.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(run_root / 'experiment.json', destination / 'experiment.json')
-    shutil.copy2('data/raw/manifest.json', destination / 'download-manifest.json')
-    summary = ['# Five-year results: NYC yellow and green taxis, 2020–2024', '',
-               'These are measured results from a local run over all 120 monthly source files. '
-               'All accepted rows contribute to cleaning and EDA. Modeling uses separate seeded samples.', '',
-               '## Coverage and evaluation', '',
-               '| Fleet | Raw rows | Accepted rows | Base training | Selected training | Validation | Test |',
-               '|---|---:|---:|---:|---:|---:|---:|']
-    metrics_table = ['| Fleet | Selected model | Test RMSE ($) | Test MAE ($) | Test R² | Mean baseline RMSE ($) |',
-                     '|---|---|---:|---:|---:|---:|']
-    findings = []
+def model_table(experiment):
+    lines = ['| Fleet / setting | Selected model | MAE ($) | RMSE ($) | R² | Within $2 | Within $5 |',
+             '|---|---|---:|---:|---:|---:|---:|']
     for fleet, run in experiment['fleets'].items():
-        target = destination / fleet
-        target.mkdir(exist_ok=True)
-        source = run_root / fleet
-        for filename in ('quality.json', 'run.json'):
-            shutil.copy2(source / filename, target / filename)
-        for path in (source / 'eda').iterdir():
-            if path.suffix in ('.csv', '.png'):
-                shutil.copy2(path, target / path.name)
-        for path in (source / 'modeling').iterdir():
-            if path.suffix in ('.json', '.csv', '.png'):
-                shutil.copy2(path, target / path.name)
-        # An explicitly descriptive preview of the SQLite snapshot, not a model sample.
-        with sqlite3.connect(source / f'nyc_{fleet}_taxi.db') as connection:
-            cursor = connection.execute('SELECT * FROM trips LIMIT 8')
-            names = [description[0] for description in cursor.description]
-            preview = [dict(zip(names, row)) for row in cursor.fetchall()]
-        for row in preview:
-            pickup = datetime.fromisoformat(row['pickup_datetime'])
-            dropoff = datetime.fromisoformat(row['dropoff_datetime'])
-            row.update(duration_minutes=(dropoff-pickup).total_seconds()/60,
-                       pickup_hour=pickup.hour, pickup_weekday=(pickup.weekday()+1)%7+1,
-                       pickup_month=pickup.month)
-            distance = row['trip_distance']
-            row['distance_bin'] = next(label for bound, label in [(1,'0-1'),(2,'1-2'),(5,'2-5'),(10,'5-10'),(20,'10-20'),(float('inf'),'20+')] if distance < bound)
-        with (target / 'feature_preview.csv').open('w', newline='') as stream:
-            writer = csv.DictWriter(stream, fieldnames=list(preview[0]))
-            writer.writeheader()
-            writer.writerows(preview)
-        m = run['modeling']
-        counts = m['split_counts']
-        raw = sum(item['rows'] for item in run['source_files'])
-        summary.append(f"| {fleet.title()} | {raw:,} | {run['full_cleaned_rows']:,} | {counts['base_train']:,} | "
-                       f"{m['selected_training_rows']:,} | {counts['validation']:,} | {counts['test']:,} |")
-        metrics_table.append(f"| {fleet.title()} | {m['selected_model']} | {m['test']['rmse']:.2f} | {m['test']['mae']:.2f} | "
-                             f"{m['test']['r2']:.3f} | {m['mean_baseline_test']['rmse']:.2f} |")
-        hours = rows(target / 'hourly_trips.csv')
-        busiest = max(hours, key=lambda r: int(r['count']))
-        monthly = rows(target / 'monthly_trips.csv')
-        by_year = {}
-        for row in monthly:
-            year = row['month'][:4]
-            by_year[year] = by_year.get(year, 0) + int(row['count'])
-        total_2020, total_2024 = by_year.get('2020',0), by_year.get('2024',0)
-        fare_summary = {row['summary']: row['fare_amount'] for row in rows(target / 'fare_distribution.csv')}
-        payment_records = rows(target / 'payment_methods.csv')
-        payment = max((row for row in payment_records if row['payment_type'] in ('1', '2')), key=lambda row: int(row['count']))
-        payment_label = payment_description(payment['payment_type'])[0].lower()
-        findings.extend([f"### {fleet.title()} findings", '',
-                         f"- The busiest observed pickup hour was {int(busiest['pickup_hour']):02d}:00, with {int(busiest['count']):,} accepted trips across the period.",
-                         f"- Accepted trips totaled {total_2020:,} in 2020 and {total_2024:,} in 2024. These describe this cleaned TLC population, not all NYC transport demand.",
-                         f"- Median metered fare was ${float(fare_summary['50%']):.2f}; the 75th percentile was ${float(fare_summary['75%']):.2f}, while the maximum was ${float(fare_summary['max']):,.2f}. The tail warrants separate evaluation.",
-                         f"- Among records explicitly coded as card or cash, the most frequent payment method was {payment_label}. Other entries describe fare regime, payment status or missing/unknown information, and remain in the analysis.", ''])
-    summary += ['', 'The population is trips with positive **recorded fares**, not verified settled payments. Codes 0 and 3–6 and missing payment information remain when the other cleaning rules pass; payment type is not a model input. Zero/negative recorded fares are excluded regardless of payment code. See [payment definitions](../data.md) for the versioned meaning of code zero.', '', 'Training: 2020–2022. Validation: 2023. Test: 2024. Starting fractions: yellow 0.002, green 0.05; seed 42. '
-                'The training-size comparison uses fixed validation/test samples. The selected training count can be larger than the starting count.', '',
-                '## Held-out performance', ''] + metrics_table
-    summary += ['', 'Only the final selected candidate is scored on the held-out test set. '
-                'The target is the completed-trip metered fare, not total passenger spending or a pre-trip quote.', '',
-                '## Sample-size sensitivity', '',
-                '| Fleet | Training rows | Training fraction | Validation RMSE ($) | Validation MAE ($) |',
-                '|---|---:|---:|---:|---:|']
-    for fleet, run in experiment['fleets'].items():
-        for candidate in run['modeling']['sample_size_comparison']:
-            summary.append(f"| {fleet.title()} | {candidate['training_rows']:,} | {candidate['training_fraction']:.4f} | "
-                           f"{candidate['validation']['rmse']:.2f} | {candidate['validation']['mae']:.2f} |")
-    summary += ['', 'The larger candidate uses the same selected regression family, with preprocessing fitted again on the larger training set. '
-                'This assesses the complete training procedure at two sizes; it does not isolate sample count from changes in learned vocabularies and caps.', '',
-                '## Extreme-error investigation', '',
-                '| Fleet | Uncapped linear validation RMSE ($) | Capped linear validation RMSE ($) | Worst 20 share of uncapped squared error |',
-                '|---|---:|---:|---:|']
-    for fleet, run in experiment['fleets'].items():
-        m = run['modeling']
-        capped = next(row for row in m['validation'] if row['model']=='LinearRegression')
-        share = m['uncapped_linear_diagnostics']['worst_20_share_of_squared_error']
-        summary.append(f"| {fleet.title()} | {m['uncapped_linear_validation']['rmse']:.2f} | {capped['rmse']:.2f} | {share:.1%} |")
-    summary += ['', 'Distance/duration feature inputs are capped at training-set 99.9th percentiles. Raw records and fare labels are retained. '
-                'The uncapped comparison uses identical base train/validation records. The table measures sensitivity to the caps; '
-                'it does not prove that every extreme record is erroneous. Worst-residual CSVs expose the measurements for inspection.', '',
-                '## Analytical findings', ''] + findings
-    investigation_source = run_root / 'verification-error-investigation'
-    if (investigation_source / 'investigation.json').exists():
-        investigation_target = destination / 'verification-error-investigation'
-        investigation_target.mkdir(exist_ok=True)
-        for artifact in investigation_source.iterdir():
-            if artifact.suffix in ('.json', '.csv'):
-                shutil.copy2(artifact, investigation_target / artifact.name)
-        investigation = json.loads((investigation_target / 'investigation.json').read_text())
-        uncapped = investigation['variants']['uncapped']
-        capped = investigation['variants']['training_only_caps']
-        worst = rows(investigation_target / 'uncapped_worst_errors.csv')[0]
-        summary += ['## Reproducing the earlier verification failure', '',
-                    'A separate January–March 2024 diagnostic rerun reproduces the earlier yellow linear-regression failure on exactly the same split counts: '
-                    f"{investigation['split_counts']['train']:,} training and {investigation['split_counts']['validation']:,} validation records.", '',
-                    f"The largest residual came from a record with **{float(worst['trip_distance']):,.1f} miles in {float(worst['duration_minutes']):.1f} minutes**, "
-                    f"an actual fare of **${float(worst['fare_amount']):.2f}**, and an uncapped prediction of **${float(worst['prediction']):,.2f}**. "
-                    'Those measurements are highly inconsistent with an ordinary taxi trip and caused extreme linear extrapolation.', '',
-                    f"On identical train/validation records, training-only input caps changed linear-regression validation RMSE from "
-                    f"**${uncapped['metrics']['rmse']:.2f} to ${capped['metrics']['rmse']:.2f}**. "
-                    f"The worst 20 records contributed {uncapped['diagnostics']['worst_20_share_of_squared_error']:.1%} of uncapped squared error. "
-                    'This is a diagnostic comparison, not the main five-year performance result and not a test-score claim.', '',
-                    'Reproduce with `python -m nyc_taxi.investigate`. Compact evidence is in `verification-error-investigation/`. '
-                    'Its additional runtime is recorded separately in `investigation.json`.', '']
-    summary += ['## Temporal pricing context', '',
-                'TLC increased the taxi/SHL meter fare structure effective 19 December 2022, near the end of the training period. '
-                '[Official TLC notice](https://www.nyc.gov/assets/tlc/downloads/pdf/industry-notices/industry_notice_22_02_english.pdf). '
-                'Most training trips therefore precede the new price structure, whereas validation and test trips follow it. '
-                'This is a plausible contributor to underestimation visible in the plots, not a measured causal attribution. '
-                'An explicit pricing-regime feature or a rolling retraining experiment is a future extension; neither was included in these scores.', '']
-    summary += ['## Measured local runtime', '',
-                f"Processing wall time: **{experiment['elapsed_seconds']/60:.1f} minutes**, excluding download and notebook rendering.", '',
-                '| Fleet | Load/clean/Parquet (min) | SQLite snapshot (min) | EDA (min) | Modeling (min) |',
-                '|---|---:|---:|---:|---:|']
-    for fleet, run in experiment['fleets'].items():
-        t=run['stage_seconds']
-        summary.append(f"| {fleet.title()} | {t['load_clean_and_parquet_seconds']/60:.1f} | {t['sqlite_seconds']/60:.1f} | "
-                       f"{t['eda_seconds']/60:.1f} | {t['modeling_seconds']/60:.1f} |")
-    env=experiment['environment']
-    summary += ['', f"Environment: Python {env['python'].split()[0]}, Spark {env['spark']}, {env['master']}, 4 GB driver setting, New York timezone. "
-                'Complete Java and operating-system details are in `experiment.json`. No clustered benchmark is claimed.', '',
-                '## Storage and limitations', '',
-                'All accepted trips are persisted in cleaned Parquet. SQLite is a bounded snapshot of at most 100,000 rows per fleet; '
-                'it is not the five-year data warehouse and is not used for modeling or EDA. Full export is configurable when disk space permits.', '',
-                'These are fixed-seed local results, with modest fixed model settings and one temporal holdout. '
-                'They do not quantify uncertainty across repeated samples. Filtering nonpositive recorded fares excludes zero/negative fare values but does not necessarily exclude trips coded no charge or dispute, '
-                'and source data accuracy is not guaranteed. Feature caps can suppress real long-distance behavior; fare-band diagnostics '
-                'and full-range plots make remaining tail errors visible.', '',
-                'Prediction plots use up to 2,000 seeded hash-selected test records. The zoomed view excludes fares beyond $100 visually, '
-                'but the full view and metrics retain them. Drop-off rankings require at least 500 trips.', '',
-                '## Charts', '',
-                '![Yellow demand](yellow/demand.png)', '![Green demand](green/demand.png)',
-                '![Yellow held-out predictions](yellow/actual_vs_predicted.png)',
-                '![Green held-out predictions](green/actual_vs_predicted.png)', '']
-    (destination / 'README.md').write_text('\n'.join(summary))
-    return experiment, '\n'.join(metrics_table)
+        model = run['modeling']
+        cases = [('Mean baseline', 'Training mean', model['mean_baseline_test'])]
+        cases += [(name.replace('_','-'), r['selected_model'].replace('Regressor',''), r['test']) for name,r in model['feature_sets'].items()]
+        for name, estimator, m in cases:
+            r2 = f"{m['r2']:.3f}" if m['r2'] is not None else 'undefined'
+            lines.append(f"| {fleet.title()} / {name} | {estimator} | {m['mae']:.2f} | {m['rmse']:.2f} | {r2} | {m['within_2_pct']:.1f}% | {m['within_5_pct']:.1f}% |")
+    return '\n'.join(lines)
 
 
-def main():
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--run', type=Path, default=Path('outputs/full-five-year/real'))
-    parser.add_argument('--destination', type=Path, default=Path('docs/results'))
-    args=parser.parse_args()
-    publish(args.run,args.destination)
+def findings(root):
+    monthly = read(root/'yellow/eda/monthly_trips.json')
+    yearly = {}
+    for r in monthly: yearly[r['month'][:4]] = yearly.get(r['month'][:4],0)+r['trip_count']
+    low = min(monthly,key=lambda r:r['trip_count']); high = max(monthly,key=lambda r:r['trip_count'])
+    hour = max(read(root/'yellow/eda/hourly_trips.json'),key=lambda r:r['trip_count'])
+    bands = read(root/'yellow/eda/fare_by_distance.json')
+    zones = read(root/'yellow/eda/highest_fare_dropoffs.json'); zone=zones[0]
+    return [
+        (f"Yellow accepted pickups were {yearly['2020']:,} in 2020 and {yearly['2024']:,} in 2024 ({(yearly['2024']/yearly['2020']-1)*100:+.1f}%). The lowest observed month was {low['month']} ({low['trip_count']:,} trips). This dataset starts in 2020, so it cannot measure a pre-pandemic decline.", 'monthly_trips'),
+        (f"The busiest yellow pickup hour was {hour['pickup_hour']:02d}:00–{hour['pickup_hour']:02d}:59 New York time, with {hour['trip_count']:,} accepted trips across the study.", 'hourly_trips'),
+        (f"Yellow mean recorded fare was ${bands[0]['mean_fare']:.2f} in the {bands[0]['distance_band']}-mile band and ${bands[-1]['mean_fare']:.2f} in the {bands[-1]['distance_band']}-mile band. These are descriptive averages, mixing routes and pricing periods.", 'fare_by_distance'),
+        (f"Destination zone {zone['DOLocationID']} had the highest yellow mean fare (${zone['mean_fare']:.2f}, {zone['trip_count']:,} trips) among mapped zones with at least 500 accepted trips. This does not adjust for trip length.", 'highest_fare_dropoffs'),
+    ]
 
 
-if __name__ == '__main__':
-    main()
+def publish(root):
+    root = Path(root); experiment = read(root/'experiment.json')
+    destination = Path('docs/results')
+    # Replace the published run as a unit; old result files must not survive a new study.
+    if destination.exists(): shutil.rmtree(destination)
+    destination.mkdir(parents=True)
+    shutil.copy2(root/'experiment.json', destination/'experiment.json')
+    for fleet in experiment['fleets']:
+        target=destination/fleet; target.mkdir()
+        for name in ('quality.json','data_quality_examples.json','run.json'):
+            shutil.copy2(root/fleet/name,target/name)
+        for subdir in ('eda','modeling'):
+            for p in (root/fleet/subdir).glob('*'):
+                if p.suffix in ('.json','.png'):
+                    shutil.copy2(p,target/p.name)
+    insights = findings(root)
+    table = model_table(experiment)
+    minutes=experiment['elapsed_seconds']/60
+    yellow=experiment['fleets']['yellow']['modeling']
+    pre=yellow['feature_sets']['pre_trip']['test']['rmse']
+    post=yellow['feature_sets']['post_trip']['test']['rmse']
+    baseline=yellow['mean_baseline_test']['rmse']
+    baseline_change=(1-pre/baseline)*100
+    post_change=(1-post/pre)*100
+    interpretation=f"Yellow pre-trip RMSE was {abs(baseline_change):.1f}% {'below' if baseline_change>=0 else 'above'} its mean baseline; post-trip RMSE was {abs(post_change):.1f}% {'lower' if post_change>=0 else 'higher'} than pre-trip RMSE."
+    counts='; '.join(f"{fleet}: {r['quality']['accepted_rows']:,} accepted trips" for fleet,r in experiment['fleets'].items())
+    fractions=' and '.join(f"{r['modeling']['sample_fraction']*100:g}% {fleet}" for fleet,r in experiment['fleets'].items())
+    samples='; '.join(f"{fleet}: {m['modeling']['split_counts']['train']:,} train / {m['modeling']['split_counts']['validation']:,} validation / {m['modeling']['split_counts']['test']:,} test" for fleet,m in experiment['fleets'].items())
+    readme=f'''# NYC taxi fare analytics
+
+Estimate NYC taxi fares before travel and compare those estimates with reconstruction from completed trips.
+
+Started as coursework in my MSc big data course; extended into a full five-year pipeline.
+
+```mermaid
+flowchart LR
+    A[TLC monthly Parquet] --> B[Normalize and plausibility filters]
+    B --> C[Cleaned Parquet]
+    C --> D[Spark SQL demand and fare analysis]
+    C --> E[Seeded samples and temporal split]
+    E --> F[Training-only route medians and encoding]
+    F --> G[Pre-trip and post-trip model comparison]
+    G --> H[Validation selection then test evaluation]
+    D --> I[Saved results and notebook]
+    H --> I
+```
+
+## Key findings: yellow taxis
+
+'''
+    for sentence, chart in insights:
+        readme+=f'{sentence}\n\n![{chart.replace("_"," ")}](docs/results/yellow/{chart}.png)\n\n'
+    readme+=f'''## Model results
+
+{table}
+
+{interpretation}
+Both settings assume a known destination; post-trip also uses realized distance and duration, making it a reconstruction upper bound.
+The known December 2022 fare-change flag is included in both settings; this comparison does not isolate its contribution or establish a causal effect.
+
+The full local run took **{minutes:.2f} minutes** with Spark {experiment['environment']['spark']}, {experiment['environment']['master']} and a {experiment['environment']['driver_memory']} driver: {counts}. Modelling uses seeded samples for local-machine compute: {fractions}; {samples}.
+
+## How to run
+
+Python 3.9–3.12 and Java 17 are required. From the project folder:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+nyc-taxi demo
+pytest -q
+nyc-taxi download
+nyc-taxi run
+```
+
+Open [the notebook](notebooks/nyc_taxi_portfolio.ipynb) in Jupyter or VS Code and run its cells in order. It reads saved results by default; set `RECOMPUTE = True` to run the full pipeline. [Methodology](docs/methodology.md) explains the assumptions; [results](docs/results/README.md) contains the counts, comparisons and diagnostics.
+
+## Limitations
+
+- Local Spark demonstrates distributed APIs on one machine.
+- One temporal holdout; no rolling evaluation.
+- Model training and evaluation use samples, not every accepted trip.
+- Positive recorded fares do not establish that payment occurred; filters exclude some legitimate unusual trips.
+- Pre-trip route medians omit traffic conditions; post-trip inputs require completed trips.
+- No deployed service or production monitoring.
+'''
+    Path('README.md').write_text(readme)
+    report=f'''# Results from the current real run
+
+These files were generated by `nyc-taxi run`. Tables use JSON; cleaned records and fitted route summaries use Parquet in the locally ignored data/output folders. Model artifacts remain local.
+
+Runtime: {minutes:.2f} minutes. Environment: Spark {experiment['environment']['spark']}; {experiment['environment']['master']}; driver {experiment['environment']['driver_memory']}; New York session timezone.
+
+{counts}.
+
+{table}
+
+## Cleaning accounting
+
+Each row receives its first failing reason. Counts below are mutually exclusive, so source = accepted + rejected. Rule order and rationale are in [methodology](../methodology.md).
+
+| Fleet | Reason | Rows |
+|---|---|---:|
+'''
+    order=['missing_timestamp','outside_period','distance_missing_or_nonpositive','distance_over_limit','duration_too_short','duration_too_long','speed_over_limit','fare_missing_or_nonpositive','fare_over_limit','accepted']
+    for fleet,r in experiment['fleets'].items():
+        q=r['quality']
+        report+=f"| {fleet} | source total | {q['source_rows']:,} |\n"
+        for reason in order: report+=f"| {fleet} | {reason} | {q['first_failure_counts'].get(reason,0):,} |\n"
+    report+='\n## Validation comparisons\n\nWinners were selected separately for each feature setting by validation RMSE. The test set was not used for selection.\n\n| Fleet | Setting | Model | Validation RMSE ($) |\n|---|---|---|---:|\n'
+    for fleet,r in experiment['fleets'].items():
+        m=r['modeling']
+        for setting,s in m['feature_sets'].items():
+            for v in s['validation']: report+=f"| {fleet} | {setting} | {v['model']} | {v['rmse']:.3f} |\n"
+    report+='\n## Sample and route coverage\n\n'+samples+'.\n\n'
+    for fleet,r in experiment['fleets'].items():
+        m=r['modeling']; flag={int(v['new_fare_regime']):v['count'] for v in m['training_pricing_regimes']}
+        report+=f"{fleet.title()}: {m['test_unseen_pair_rows']:,} test rows used the unseen-route fallback. Training contained {flag.get(0,0):,} pre-change and {flag.get(1,0):,} post-change rows.\n\n"
+    report+='## Data quality findings\n\n'
+    for fleet,r in experiment['fleets'].items():
+        for e in r['quality']['examples']:
+            report+=f"The source {fleet} record at {e['pickup_datetime']} reports {e['trip_distance']:,.1f} miles in {e['duration_minutes']:.2f} minutes with a ${e['fare_amount']:.2f} fare. It is rejected as `{e['quality_reason']}`. This example illustrates why physically implausible inputs are removed before modelling.\n\n"
+    report+='## Error diagnostics\n\nEach fleet has `pre_trip_error_by_fare.json` and `post_trip_error_by_fare.json`, plus the 20 largest absolute test residuals for each setting. Inspect these alongside the averages; the test population has already passed the cleaning rules. See [methodology](../methodology.md) for interpretation.\n'
+    (destination/'README.md').write_text(report)

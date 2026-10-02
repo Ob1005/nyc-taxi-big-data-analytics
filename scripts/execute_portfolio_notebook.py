@@ -1,13 +1,12 @@
-"""Execute the results walkthrough and save identical root and notebook copies."""
+"""Clear and execute the canonical notebook against the current saved results."""
 from pathlib import Path
 import nbformat
 from nbclient import NotebookClient
-
 path=Path('notebooks/nyc_taxi_portfolio.ipynb')
 notebook=nbformat.read(path, as_version=4)
-client=NotebookClient(notebook, timeout=120, kernel_name='python3', resources={'metadata':{'path':str(Path.cwd())}})
-client.execute()
+for cell in notebook.cells:
+    if cell.cell_type=='code': cell.outputs=[]; cell.execution_count=None
+NotebookClient(notebook, timeout=120, kernel_name='python3', resources={'metadata':{'path':str(Path.cwd())}}).execute()
 nbformat.validate(notebook)
-for output in (path, Path('newyork-taxi.ipynb')):
-    nbformat.write(notebook, output)
-print('Executed real-results walkthrough successfully; saved outputs in both notebook copies.')
+nbformat.write(notebook,path)
+print('Saved the executed notebook with current results.')

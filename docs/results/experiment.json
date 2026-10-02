@@ -244,173 +244,152 @@
           "rows": 3668371
         }
       ],
-      "years": [
-        2020,
-        2021,
-        2022,
-        2023,
-        2024
-      ],
-      "months": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "sqlite_rows": 100000,
-      "sqlite_scope": "bounded_snapshot",
-      "sqlite_limit": 100000,
-      "full_cleaned_rows": 170265054,
       "quality": {
-        "accepted": 170265054,
-        "invalid_distance": 2863932,
-        "outside_period": 1204,
-        "invalid_fare": 1476671,
-        "invalid_duration": 82583
+        "source_rows": 174689444,
+        "accepted_rows": 169430105,
+        "first_failure_counts": {
+          "duration_too_short": 815778,
+          "accepted": 169430105,
+          "outside_period": 1204,
+          "fare_missing_or_nonpositive": 1353693,
+          "fare_over_limit": 497,
+          "duration_too_long": 202685,
+          "speed_over_limit": 13969,
+          "distance_missing_or_nonpositive": 2863932,
+          "distance_over_limit": 7581
+        },
+        "thresholds": {
+          "first_year": 2020,
+          "last_year": 2024,
+          "max_distance_miles": 100.0,
+          "min_duration_minutes": 1.0,
+          "max_duration_minutes": 360.0,
+          "max_average_speed_mph": 80.0,
+          "max_fare_dollars": 500.0
+        },
+        "examples": [
+          {
+            "pickup_datetime": "2024-02-29 13:17:33",
+            "trip_distance": 6860.8,
+            "duration_minutes": 38.61666666666667,
+            "fare_amount": 32.5,
+            "quality_reason": "distance_over_limit"
+          }
+        ]
       },
       "modeling": {
-        "split_counts": {
-          "base_train": 186681,
-          "validation": 74588,
-          "test": 79570
-        },
-        "selected_training_rows": 373614,
         "sample_fraction": 0.002,
         "seed": 42,
+        "split_counts": {
+          "train": 185235,
+          "validation": 73987,
+          "test": 79550
+        },
         "train_before": "2023-01-01",
-        "validation_before": "2024-01-01",
-        "validation": [
+        "test_from": "2024-01-01",
+        "fallback": {
+          "historical_distance": 1.83,
+          "historical_duration": 11.4
+        },
+        "training_pricing_regimes": [
           {
-            "model": "LinearRegression",
-            "rmse": 9.308159077025428,
-            "mae": 5.53736171684281,
-            "r2": 0.731129532809208,
-            "fit_and_evaluation_seconds": 7.046700875000056
+            "new_fare_regime": 0.0,
+            "count": 183044
           },
           {
-            "model": "RandomForestRegressor",
-            "rmse": 9.057589724168574,
-            "mae": 5.216421279293623,
-            "r2": 0.745410318423062,
-            "fit_and_evaluation_seconds": 26.759151416999998
-          },
-          {
-            "model": "GBTRegressor",
-            "rmse": 8.433350390438063,
-            "mae": 4.990238528239503,
-            "r2": 0.779293157366528,
-            "fit_and_evaluation_seconds": 59.880216625
+            "new_fare_regime": 1.0,
+            "count": 2191
           }
         ],
-        "selected_model": "GBTRegressor",
-        "sample_size_comparison": [
-          {
-            "training_rows": 186681,
-            "training_fraction": 0.002,
-            "validation": {
-              "rmse": 8.433350390438063,
-              "mae": 4.990238528239503,
-              "r2": 0.779293157366528
-            }
-          },
-          {
-            "training_rows": 373614,
-            "training_fraction": 0.004,
-            "validation": {
-              "rmse": 8.409943466457952,
-              "mae": 4.996831819168344,
-              "r2": 0.7805166092067359
-            }
-          }
-        ],
-        "training_input_caps_p999": {
-          "trip_distance": 28.2,
-          "duration_minutes": 1400.6666666666667
-        },
-        "uncapped_linear_validation": {
-          "rmse": 9.877592006385305,
-          "mae": 5.722960184958181,
-          "r2": 0.6972266294328444
-        },
-        "uncapped_linear_diagnostics": {
-          "absolute_error_quantiles": {
-            "median": 3.3167633862054364,
-            "p90": 13.611280897886836,
-            "p99": 28.26176523136001
-          },
-          "worst_20_share_of_squared_error": 0.15862730808936532
-        },
-        "validation_diagnostics": {
-          "LinearRegression": {
-            "absolute_error_quantiles": {
-              "median": 3.4700077785220245,
-              "p90": 13.045473309477899,
-              "p99": 26.13623091456582
-            },
-            "worst_20_share_of_squared_error": 0.16696714549972055
-          },
-          "RandomForestRegressor": {
-            "absolute_error_quantiles": {
-              "median": 3.393482997363872,
-              "p90": 11.442483881357454,
-              "p99": 27.94315767493503
-            },
-            "worst_20_share_of_squared_error": 0.17970098584873576
-          },
-          "GBTRegressor": {
-            "absolute_error_quantiles": {
-              "median": 3.140995484808422,
-              "p90": 11.107527347664611,
-              "p99": 24.7802272977245
-            },
-            "worst_20_share_of_squared_error": 0.164525432145632
-          }
-        },
-        "test": {
-          "rmse": 8.435952968141349,
-          "mae": 5.249078431158853,
-          "r2": 0.7702047477786518
-        },
-        "test_diagnostics": {
-          "absolute_error_quantiles": {
-            "median": 3.2951609553399877,
-            "p90": 11.513481484460254,
-            "p99": 27.372846963330645
-          },
-          "worst_20_share_of_squared_error": 0.08047079254528358
-        },
+        "test_unseen_pair_rows": 1882,
         "mean_baseline_test": {
-          "rmse": 18.6341204871194,
-          "mae": 10.471215546332758,
-          "r2": -0.12121926292145835
+          "mae": 10.424095705095551,
+          "rmse": 18.56788942010406,
+          "r2": -0.12039592814557976,
+          "within_2_pct": 19.2683846637335,
+          "within_5_pct": 44.85103708359522
         },
-        "prediction_context": "completed-trip metered fare, excluding tips and surcharges",
-        "elapsed_seconds": 231.88369925000006
+        "feature_sets": {
+          "pre_trip": {
+            "validation": [
+              {
+                "model": "LinearRegression",
+                "mae": 4.8785244669221335,
+                "rmse": 8.393592244499176,
+                "r2": 0.7681781913133372,
+                "within_2_pct": 28.103585765066835,
+                "within_5_pct": 69.80820955032641
+              },
+              {
+                "model": "RandomForestRegressor",
+                "mae": 5.580402552549132,
+                "rmse": 9.831649356217238,
+                "r2": 0.6819383431895608,
+                "within_2_pct": 35.01831402814008,
+                "within_5_pct": 63.817968021409165
+              },
+              {
+                "model": "GBTRegressor",
+                "mae": 3.8886640258410954,
+                "rmse": 7.979629502681728,
+                "r2": 0.790480712111151,
+                "within_2_pct": 44.68893183937719,
+                "within_5_pct": 80.65470961114791
+              }
+            ],
+            "selected_model": "GBTRegressor",
+            "test": {
+              "mae": 4.294879102973735,
+              "rmse": 8.630729008757223,
+              "r2": 0.7579297598465118,
+              "within_2_pct": 42.36455059710874,
+              "within_5_pct": 77.69830295411691
+            }
+          },
+          "post_trip": {
+            "validation": [
+              {
+                "model": "LinearRegression",
+                "mae": 3.5341778597521016,
+                "rmse": 5.844377574007572,
+                "r2": 0.8876080811652365,
+                "within_2_pct": 35.783313284766244,
+                "within_5_pct": 86.33138254017597
+              },
+              {
+                "model": "RandomForestRegressor",
+                "mae": 4.597984179869909,
+                "rmse": 7.867563742343451,
+                "r2": 0.7963243574579177,
+                "within_2_pct": 37.08083852568694,
+                "within_5_pct": 71.27468339032534
+              },
+              {
+                "model": "GBTRegressor",
+                "mae": 1.9408359649165534,
+                "rmse": 4.728670727943573,
+                "r2": 0.9264239104232994,
+                "within_2_pct": 74.87396434508766,
+                "within_5_pct": 93.10960033519402
+              }
+            ],
+            "selected_model": "GBTRegressor",
+            "test": {
+              "mae": 2.2571642281339406,
+              "rmse": 5.415798564406625,
+              "r2": 0.9046827628845876,
+              "within_2_pct": 71.92708988057825,
+              "within_5_pct": 90.66121935889377
+            }
+          }
+        }
       },
       "stage_seconds": {
-        "load_clean_and_parquet_seconds": 341.952173875,
-        "sqlite_seconds": 12.923275124999975,
-        "eda_seconds": 166.14957579100007,
-        "modeling_seconds": 235.09310883299997
+        "cleaning": 518.445742583,
+        "eda": 109.02623949999997,
+        "modeling": 247.05976466700008
       },
-      "elapsed_seconds": 756.391588042,
-      "environment": {
-        "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
-        "spark": "3.5.3",
-        "platform": "macOS-26.5-arm64-arm-64bit",
-        "java": "java version \"17.0.12\" 2024-07-16 LTS\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
-        "master": "local[2]",
-        "driver_memory": "4g",
-        "timezone": "America/New_York"
-      }
+      "elapsed_seconds": 874.5335450419999
     },
     "green": {
       "synthetic": false,
@@ -656,173 +635,144 @@
           "rows": 53994
         }
       ],
-      "years": [
-        2020,
-        2021,
-        2022,
-        2023,
-        2024
-      ],
-      "months": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "sqlite_rows": 100000,
-      "sqlite_scope": "bounded_snapshot",
-      "sqlite_limit": 100000,
-      "full_cleaned_rows": 4845392,
       "quality": {
-        "accepted": 4845392,
-        "invalid_distance": 229226,
-        "outside_period": 111,
-        "invalid_fare": 14811,
-        "invalid_duration": 1071
+        "source_rows": 5090611,
+        "accepted_rows": 4780936,
+        "first_failure_counts": {
+          "duration_too_short": 46878,
+          "accepted": 4780936,
+          "outside_period": 111,
+          "fare_missing_or_nonpositive": 11079,
+          "fare_over_limit": 11,
+          "duration_too_long": 17252,
+          "speed_over_limit": 957,
+          "distance_missing_or_nonpositive": 229226,
+          "distance_over_limit": 4161
+        },
+        "thresholds": {
+          "first_year": 2020,
+          "last_year": 2024,
+          "max_distance_miles": 100.0,
+          "min_duration_minutes": 1.0,
+          "max_duration_minutes": 360.0,
+          "max_average_speed_mph": 80.0,
+          "max_fare_dollars": 500.0
+        },
+        "examples": []
       },
       "modeling": {
-        "split_counts": {
-          "base_train": 173992,
-          "validation": 37329,
-          "test": 31158
-        },
-        "selected_training_rows": 347393,
         "sample_fraction": 0.05,
         "seed": 42,
+        "split_counts": {
+          "train": 171320,
+          "validation": 36513,
+          "test": 30691
+        },
         "train_before": "2023-01-01",
-        "validation_before": "2024-01-01",
-        "validation": [
+        "test_from": "2024-01-01",
+        "fallback": {
+          "historical_distance": 2.42,
+          "historical_duration": 13.283333333333333
+        },
+        "training_pricing_regimes": [
           {
-            "model": "LinearRegression",
-            "rmse": 23.46793493009601,
-            "mae": 4.88671808444933,
-            "r2": 0.2274703450510266,
-            "fit_and_evaluation_seconds": 3.646929417000024
+            "new_fare_regime": 0.0,
+            "count": 169872
           },
           {
-            "model": "RandomForestRegressor",
-            "rmse": 23.472859669083572,
-            "mae": 4.043364409063575,
-            "r2": 0.22714608080626741,
-            "fit_and_evaluation_seconds": 9.330644667000001
-          },
-          {
-            "model": "GBTRegressor",
-            "rmse": 23.453330246135806,
-            "mae": 4.214153370899341,
-            "r2": 0.22843157498342292,
-            "fit_and_evaluation_seconds": 31.866780250000033
+            "new_fare_regime": 1.0,
+            "count": 1448
           }
         ],
-        "selected_model": "GBTRegressor",
-        "sample_size_comparison": [
-          {
-            "training_rows": 173992,
-            "training_fraction": 0.05,
-            "validation": {
-              "rmse": 23.453330246135806,
-              "mae": 4.214153370899341,
-              "r2": 0.22843157498342292
-            }
-          },
-          {
-            "training_rows": 347393,
-            "training_fraction": 0.1,
-            "validation": {
-              "rmse": 23.38305629601552,
-              "mae": 4.188383094067335,
-              "r2": 0.233048397256581
-            }
-          }
-        ],
-        "training_input_caps_p999": {
-          "trip_distance": 40.89,
-          "duration_minutes": 1411.05
-        },
-        "uncapped_linear_validation": {
-          "rmse": 23.69637292996238,
-          "mae": 5.047995537392932,
-          "r2": 0.21235746542084621
-        },
-        "uncapped_linear_diagnostics": {
-          "absolute_error_quantiles": {
-            "median": 2.8775085701899297,
-            "p90": 10.23152933967998,
-            "p99": 32.529879783644375
-          },
-          "worst_20_share_of_squared_error": 0.865036875654887
-        },
-        "validation_diagnostics": {
-          "LinearRegression": {
-            "absolute_error_quantiles": {
-              "median": 2.8702356339678374,
-              "p90": 9.611644982679142,
-              "p99": 32.27907395250351
-            },
-            "worst_20_share_of_squared_error": 0.8693342856579283
-          },
-          "RandomForestRegressor": {
-            "absolute_error_quantiles": {
-              "median": 2.1024752215330675,
-              "p90": 7.675726827677341,
-              "p99": 31.941651154912513
-            },
-            "worst_20_share_of_squared_error": 0.8846117505476487
-          },
-          "GBTRegressor": {
-            "absolute_error_quantiles": {
-              "median": 2.4791328882536448,
-              "p90": 7.931620292785027,
-              "p99": 29.113130899538056
-            },
-            "worst_20_share_of_squared_error": 0.8907485681648156
-          }
-        },
-        "test": {
-          "rmse": 10.382458551767181,
-          "mae": 4.369265347204417,
-          "r2": 0.6009139711691609
-        },
-        "test_diagnostics": {
-          "absolute_error_quantiles": {
-            "median": 2.481192973751087,
-            "p90": 8.48101296914249,
-            "p99": 37.24762369069339
-          },
-          "worst_20_share_of_squared_error": 0.3852749165744414
-        },
+        "test_unseen_pair_rows": 533,
         "mean_baseline_test": {
-          "rmse": 16.451338006109523,
-          "mae": 9.206590799214972,
-          "r2": -0.0020019415279193264
+          "mae": 8.933874042728647,
+          "rmse": 15.255408949437138,
+          "r2": -0.0014444600513923156,
+          "within_2_pct": 15.59088983741162,
+          "within_5_pct": 36.57098172102571
         },
-        "prediction_context": "completed-trip metered fare, excluding tips and surcharges",
-        "elapsed_seconds": 100.83298891699997
+        "feature_sets": {
+          "pre_trip": {
+            "validation": [
+              {
+                "model": "LinearRegression",
+                "mae": 4.560608513760795,
+                "rmse": 10.28142092118873,
+                "r2": 0.5157139017517062,
+                "within_2_pct": 41.20450250595678,
+                "within_5_pct": 77.03009886889602
+              },
+              {
+                "model": "RandomForestRegressor",
+                "mae": 5.05296943179213,
+                "rmse": 11.207857296690431,
+                "r2": 0.4245058559123981,
+                "within_2_pct": 38.55613069317777,
+                "within_5_pct": 73.67786815654699
+              },
+              {
+                "model": "GBTRegressor",
+                "mae": 4.661970492392714,
+                "rmse": 10.81122136173896,
+                "r2": 0.46451754862595807,
+                "within_2_pct": 42.625914058006735,
+                "within_5_pct": 76.97806260783831
+              }
+            ],
+            "selected_model": "LinearRegression",
+            "test": {
+              "mae": 4.789986170504967,
+              "rmse": 11.004398713745017,
+              "r2": 0.47891113265895957,
+              "within_2_pct": 41.04134762633997,
+              "within_5_pct": 76.16890945228243
+            }
+          },
+          "post_trip": {
+            "validation": [
+              {
+                "model": "LinearRegression",
+                "mae": 3.1332831557255285,
+                "rmse": 7.212973500326724,
+                "r2": 0.7616449285670019,
+                "within_2_pct": 54.692849122230434,
+                "within_5_pct": 85.65442445156519
+              },
+              {
+                "model": "RandomForestRegressor",
+                "mae": 3.8207616547215335,
+                "rmse": 8.715642314810896,
+                "r2": 0.6519877583384,
+                "within_2_pct": 46.977788732780105,
+                "within_5_pct": 81.10809848547092
+              },
+              {
+                "model": "GBTRegressor",
+                "mae": 2.983923945542088,
+                "rmse": 7.411026913491676,
+                "r2": 0.7483757436801486,
+                "within_2_pct": 58.55996494399255,
+                "within_5_pct": 86.59929340234986
+              }
+            ],
+            "selected_model": "LinearRegression",
+            "test": {
+              "mae": 3.3564304130126357,
+              "rmse": 8.227622815828106,
+              "r2": 0.7087084357828655,
+              "within_2_pct": 55.671043628425274,
+              "within_5_pct": 84.93695220097098
+            }
+          }
+        }
       },
       "stage_seconds": {
-        "load_clean_and_parquet_seconds": 41.639108792,
-        "sqlite_seconds": 4.012259624999956,
-        "eda_seconds": 8.483274250000022,
-        "modeling_seconds": 102.36188791699999
+        "cleaning": 32.23587020800005,
+        "eda": 3.5717962920000446,
+        "modeling": 67.508199375
       },
-      "elapsed_seconds": 156.59614929200006,
-      "environment": {
-        "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
-        "spark": "3.5.3",
-        "platform": "macOS-26.5-arm64-arm-64bit",
-        "java": "java version \"17.0.12\" 2024-07-16 LTS\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
-        "master": "local[2]",
-        "driver_memory": "4g",
-        "timezone": "America/New_York"
-      }
+      "elapsed_seconds": 103.31595941600006
     }
   },
   "environment": {
@@ -834,6 +784,5 @@
     "driver_memory": "4g",
     "timezone": "America/New_York"
   },
-  "elapsed_seconds": 915.527392625,
-  "csv_conversion": false
+  "elapsed_seconds": 981.5342155
 }

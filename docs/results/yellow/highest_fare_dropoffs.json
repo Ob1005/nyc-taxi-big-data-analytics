@@ -1,0 +1,27 @@
+[
+  {
+    "DOLocationID": 204,
+    "trip_count": 804,
+    "mean_fare": 98.85126865671643
+  },
+  {
+    "DOLocationID": 84,
+    "trip_count": 1465,
+    "mean_fare": 96.77330375426622
+  },
+  {
+    "DOLocationID": 44,
+    "trip_count": 3584,
+    "mean_fare": 92.56686104910713
+  },
+  {
+    "DOLocationID": 1,
+    "trip_count": 404297,
+    "mean_fare": 84.28968980724574
+  },
+  {
+    "DOLocationID": 109,
+    "trip_count": 1733,
+    "mean_fare": 84.25761684939414
+  }
+]

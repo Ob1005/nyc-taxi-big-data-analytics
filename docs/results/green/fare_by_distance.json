@@ -1,0 +1,32 @@
+[
+  {
+    "distance_band": "0\u20131",
+    "trip_count": 716116,
+    "mean_fare": 7.111371579464962
+  },
+  {
+    "distance_band": "1\u20132",
+    "trip_count": 1391418,
+    "mean_fare": 9.879390118569452
+  },
+  {
+    "distance_band": "2\u20135",
+    "trip_count": 1594867,
+    "mean_fare": 16.506148913985434
+  },
+  {
+    "distance_band": "5\u201310",
+    "trip_count": 690856,
+    "mean_fare": 28.450861525413394
+  },
+  {
+    "distance_band": "10\u201320",
+    "trip_count": 328583,
+    "mean_fare": 46.37038964279986
+  },
+  {
+    "distance_band": "20\u2013100",
+    "trip_count": 59096,
+    "mean_fare": 72.23698930553715
+  }
+]
