@@ -12,7 +12,7 @@ def show(function): code(inspect.getsource(function))
 
 md('# NYC taxi fare analytics\n\nCan we estimate a taxi fare before travel, and how does that compare with reconstructing a completed trip? Yellow is the main fleet; green is a shorter companion comparison. This walkthrough shows the implementation and reads results from the actual full run. See [methodology](../docs/methodology.md) for assumptions.')
 code('''from pathlib import Path
-import json, subprocess, sys
+import json, math, subprocess, sys
 from IPython.display import display, Markdown, Image
 from pyspark.sql import functions as F
 from pyspark.ml import Pipeline
@@ -60,8 +60,8 @@ zone=read('yellow/highest_fare_dropoffs.json')[0]
 interpretations=[
     f"Accepted yellow pickups: {years['2020']:,} in 2020 and {years['2024']:,} in 2024. Lowest observed month: {low['month']} ({low['trip_count']:,}). No pre-pandemic year is available.",
     f"Busiest yellow pickup hour: {hour['pickup_hour']}:00, with {hour['trip_count']:,} trips over the study.",
-    f"Mean recorded fare rises from ${bands[0]['mean_fare']:.2f} in the {bands[0]['distance_band']}-mile band to ${bands[-1]['mean_fare']:.2f} in the {bands[-1]['distance_band']}-mile band. This mixes routes and pricing periods.",
-    f"Zone {zone['DOLocationID']} leads mean fare at ${zone['mean_fare']:.2f} over {zone['trip_count']:,} trips. The ranking does not control for distance."
+    f"Mean recorded fare rises from USD {bands[0]['mean_fare']:.2f} in the {bands[0]['distance_band']}-mile band to USD {bands[-1]['mean_fare']:.2f} in the {bands[-1]['distance_band']}-mile band. This mixes routes and pricing periods.",
+    f"Zone {zone['DOLocationID']} leads mean fare at USD {zone['mean_fare']:.2f} over {zone['trip_count']:,} trips. The ranking does not control for distance."
 ]
 for name, text in zip(EDA_QUERIES,interpretations):
     display(Image(filename=str(RESULTS/'yellow'/f'{name}.png')))
@@ -84,7 +84,7 @@ end=source.index('            residual_diagnostics')
 md('```python\n'+inspect.cleandoc(source[start:end])+'\n```')
 show(pipeline.regression_metrics)
 code("for fleet,r in experiment['fleets'].items():\n    display(Markdown('### '+fleet.title()))\n    table([{'setting':s,**v} for s,m in r['modeling']['feature_sets'].items() for v in m['validation']])\ndisplay(Markdown(model_table(experiment)))\nfor fleet in experiment['fleets']:\n    for setting in FEATURE_SETS:\n        display(Markdown(f'### {fleet.title()}: {setting} errors by fare band'))\n        table(read(f'{fleet}/{setting}_error_by_fare.json'))\n        if fleet=='yellow':\n            display(Markdown('Largest absolute test residuals after filtering'))\n            table(read(f'{fleet}/{setting}_worst_errors.json'))\ndisplay(Markdown(f\"Full run: {experiment['elapsed_seconds']/60:.2f} minutes. Environment: Spark {experiment['environment']['spark']}, {experiment['environment']['master']}, {experiment['environment']['driver_memory']} driver.\"))")
-code("y=experiment['fleets']['yellow']['modeling']\npre=y['feature_sets']['pre_trip']; post=y['feature_sets']['post_trip']\ndisplay(Markdown(f\"Yellow selected {pre['selected_model']} for pre-trip and {post['selected_model']} for post-trip. Test RMSE: ${pre['test']['rmse']:.2f} pre-trip versus ${post['test']['rmse']:.2f} post-trip; mean baseline ${y['mean_baseline_test']['rmse']:.2f}. The same held-out trips support this comparison.\"))")
+code("y=experiment['fleets']['yellow']['modeling']\npre=y['feature_sets']['pre_trip']; post=y['feature_sets']['post_trip']\ndisplay(Markdown(f\"Yellow selected {pre['selected_model']} for pre-trip and {post['selected_model']} for post-trip. Test RMSE: USD {pre['test']['rmse']:.2f} pre-trip versus USD {post['test']['rmse']:.2f} post-trip; mean baseline USD {y['mean_baseline_test']['rmse']:.2f}. The same held-out trips support this comparison.\"))")
 md('Compare pre-trip estimates with the mean baseline first; post-trip reconstruction answers an easier question. Fare-band errors and the largest residuals expose remaining failures after cleaning. Selection used validation, not these test diagnostics. See [results](../docs/results/README.md) for all published tables and [methodology](../docs/methodology.md) for limitations.')
 n['cells']=cells
 n.metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},'language_info':{'name':'python'}}
